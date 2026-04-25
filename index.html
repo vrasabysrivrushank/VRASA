@@ -1181,6 +1181,7 @@
     const tag2El    = document.getElementById('cover-tag-line2');
 
     function switchTo(idx) {
+      currentIdx = idx;
       const d = COVER_DATA[idx];
       activeCoverCat = d.cat;
 
@@ -1204,7 +1205,34 @@
       dots.forEach((dot, i) => dot.classList.toggle('is-active', i === idx));
     }
 
-    dots.forEach((dot, i) => dot.addEventListener('click', () => switchTo(i)));
+    let currentIdx = 0;
+    let slideshowTimer = null;
+
+    function nextSlide() {
+      currentIdx = (currentIdx + 1) % COVER_DATA.length;
+      switchTo(currentIdx);
+    }
+
+    function startAutoplay() {
+      clearInterval(slideshowTimer);
+      slideshowTimer = setInterval(nextSlide, 1000);
+    }
+
+    // Manual dot click resets the timer so it doesn't skip mid-cycle
+    dots.forEach((dot, i) => dot.addEventListener('click', () => {
+      currentIdx = i;
+      switchTo(i);
+      startAutoplay();
+    }));
+
+    // Pause on hover, resume on leave
+    const coverEl = document.querySelector('.cover');
+    if (coverEl) {
+      coverEl.addEventListener('mouseenter', () => clearInterval(slideshowTimer));
+      coverEl.addEventListener('mouseleave', startAutoplay);
+    }
+
+    startAutoplay();
   }
 
   /* ═══════════════════════════════════════════════════
