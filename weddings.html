@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weddings — VRASA by Sri Vrushank</title>
+  <meta name="description" content="Wedding photography by Sri Vrushank — VRASA." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&family=Space+Mono:ital,wght@0,400;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/vrasa.css">
+  <style>
+    body { background: #0A0A0A; color: rgba(255,255,255,0.75); }
+    .g-nav { background:#0A0A0A; border-bottom-color:rgba(255,255,255,0.08); color:rgba(255,255,255,0.65); opacity:1; transform:none; pointer-events:auto; }
+    .g-nav__brand { color:#fff; }
+    .g-nav__links .sep { background:rgba(255,255,255,0.2); }
+    .g-nav a.current { color:#fff; font-weight:700; }
+
+    .cat-header { padding:52px 32px 32px; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:flex-end; }
+    .cat-header__label { font-family:var(--mono); font-size: 12px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.28); margin-bottom:8px; }
+    .cat-header__title { font-family:var(--sc); font-size: clamp(36px,5vw,64px); font-weight:300; letter-spacing:0.06em; color:#fff; line-height:1; }
+    .cat-header__meta { font-family:var(--mono); font-size: 12px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.28); text-align:right; }
+
+    .cat-grid { padding:20px; display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
+
+    .editorial { position:relative; overflow:hidden; cursor:pointer; aspect-ratio:3/4; background:#1c1c1c; }
+    .editorial:first-child { grid-column:span 2; aspect-ratio:16/9; }
+    .editorial img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.55s ease; }
+    .editorial:hover img { transform:scale(1.04); }
+
+    .ph { width:100%; height:100%; }
+    .ph-w1 { background:linear-gradient(160deg,#2d1e10 0%,#5a3c22 50%,#1e1408 100%); }
+    .ph-w2 { background:linear-gradient(135deg,#251820 0%,#4a3040 50%,#181018 100%); }
+    .ph-w3 { background:linear-gradient(160deg,#2a2018 0%,#504030 50%,#1a1410 100%); }
+    .ph-w4 { background:linear-gradient(135deg,#1e1a10 0%,#3c3420 50%,#141008 100%); }
+    .ph-w5 { background:linear-gradient(160deg,#221c14 0%,#443828 50%,#161008 100%); }
+
+    .editorial__overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0) 55%); pointer-events:none; }
+    .editorial__cat { position:absolute; top:12px; left:14px; font-family:var(--mono); font-size: 10px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.38); background:rgba(0,0,0,0.5); padding:3px 7px; }
+    .editorial__info { position:absolute; bottom:16px; left:16px; right:16px; }
+    .editorial__title { font-family:var(--serif); font-style:italic; font-size: clamp(27px,2.5vw,42px); color:#fff; line-height:1.1; margin-bottom:6px; }
+    .editorial__sub { font-family:var(--mono); font-size: 11px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.38); }
+
+    .cat-footer { border-top:1px solid rgba(255,255,255,0.08); padding:14px 28px; display:flex; justify-content:space-between; font-family:var(--mono); font-size: 12px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.25); margin-top:4px; }
+    .cat-footer a { transition:color 0.2s; }
+    .cat-footer a:hover { color:rgba(255,255,255,0.65); }
+
+    @media (max-width:800px) { .cat-grid { grid-template-columns:repeat(2,1fr); } .editorial:first-child { grid-column:span 2; } }
+    @media (max-width:500px) { .cat-grid { grid-template-columns:1fr; padding:12px; } .editorial:first-child { grid-column:span 1; aspect-ratio:3/4; } }
+
+    /* ── Back to portfolio ── */
+    .cat-back {
+      display: flex;
+      align-items: center;
+      padding: 14px 32px 0;
+      margin-top: calc(var(--nav-h, 64px) + 64px);
+    }
+    .cat-back__link {
+      font-family: var(--mono, 'Space Mono', monospace);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: color .2s ease;
+    }
+    .cat-back__link:hover { color: rgba(244,241,234,.85); }
+    .cat-back__link svg { width:12px; height:12px; flex-shrink:0; }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="site-nav__logo" aria-label="VRASA — Home"><svg viewBox="0 0 520 148" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="height:40px;width:auto;color:inherit;display:block;"><text x="260" y="78" text-anchor="middle" font-family="'Playfair Display','Cormorant SC',serif" font-weight="900" font-size="88" letter-spacing="10" fill="currentColor">VRASA</text><g transform="translate(260,96)" stroke-linecap="round" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="-108" y1="0" x2="-22" y2="0"/><line x1="22" y1="0" x2="108" y2="0"/><path d="M -22 0 C -16 -6,-8 -6,-4 -3"/><path d="M 22 0 C 16 -6,8 -6,4 -3"/></g><circle cx="260" cy="96" r="2.2" fill="currentColor"/><text x="260" y="130" text-anchor="middle" font-family="'Cormorant Garamond','Cormorant',Georgia,serif" font-style="italic" font-weight="400" font-size="17" letter-spacing="3" fill="currentColor" opacity="0.72">by Sri Vrashank</text></svg></a>
+  <div class="site-nav__links">
+      <a href="index.html">Home</a>
+      <a href="archive.html" class="is-active">Portfolio</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+  </div>
+</nav>
+<div class="page-veil" id="page-veil" aria-hidden="true"></div>
+<div class="cat-back">
+  <a href="archive.html?cat=Weddings" class="cat-back__link">
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 2L3.5 6L7.5 10"/></svg> All Projects
+  </a>
+</div>
+
+<header class="cat-header">
+    <div>
+      <p class="cat-header__label">VRASA · Vol. 07</p>
+      <h1 class="cat-header__title">Weddings</h1>
+    </div>
+    <div class="cat-header__meta"><p>31 Frames</p><p>Visakhapatnam</p></div>
+  </header>
+
+  <main class="cat-grid" aria-label="Wedding photography">
+
+    <article class="editorial">
+      <img src="shoots/weddings/pelli-roju/01_1-DSC00075.jpg" alt="Pelli Roju — wedding ceremony">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">01 · Wedding</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">Pelli Roju.</h2>
+        <p class="editorial__sub">31 frames &thinsp;·&thinsp; The ceremony</p>
+      </div>
+    </article>
+
+    <article class="editorial">
+      <img src="shoots/weddings/pelli-roju/05_2-096A9595.jpg" alt="Pelli Roju — ritual details">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">02 · Wedding</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">The ritual.</h2>
+        <p class="editorial__sub">Hands &thinsp;·&thinsp; Gold &thinsp;·&thinsp; Fire</p>
+      </div>
+    </article>
+
+    <article class="editorial">
+      <img src="shoots/weddings/pelli-roju/09_3-DSC00152.jpg" alt="Pelli Roju — portraits">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">03 · Wedding</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">Between moments.</h2>
+        <p class="editorial__sub">Candid &thinsp;·&thinsp; Unposed</p>
+      </div>
+    </article>
+
+    <article class="editorial">
+      <img src="shoots/weddings/pelli-roju/13_4-DSC00297.jpg" alt="Pelli Roju — celebrations">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">04 · Wedding</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">The celebration.</h2>
+        <p class="editorial__sub">Joy &thinsp;·&thinsp; Colour</p>
+      </div>
+    </article>
+
+    <article class="editorial">
+      <img src="shoots/weddings/pelli-roju/31_14-DSC07369.jpg" alt="Pelli Roju — final frames">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">05 · Wedding</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">Last light.</h2>
+        <p class="editorial__sub">Evening &thinsp;·&thinsp; Farewell</p>
+      </div>
+    </article>
+
+  </main>
+
+  <footer class="cat-footer">
+    <span>© 2019&thinsp;—&thinsp;2026 VRASA</span>
+    <a href="archive.html">↓ Full Portfolio (214)</a>
+    <a href="mailto:srivrushank@gmail.com">srivrushank@gmail.com</a>
+  </footer>
+
+  <script src="assets/js/vrasa.js"></script>
+
+<script>
+/* ── Site nav: scroll-state ── */
+!function(){
+  var n=document.getElementById('site-nav'); if(!n) return;
+  function u(){ n.classList.toggle('is-scrolled',window.scrollY>50); }
+  window.addEventListener('scroll',u,{passive:true}); u();
+}();
+/* ── Page transitions ── */
+!function(){
+  var v=document.getElementById('page-veil'); if(!v) return;
+  // Arrive: flash opaque then fade out
+  v.style.opacity='1'; v.style.transition='none';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      v.style.transition='opacity .52s cubic-bezier(.4,0,.2,1)';
+      v.style.opacity='0';
+    });
+  });
+  // Depart: fade in then navigate
+  document.querySelectorAll('a[href]').forEach(function(a){
+    var h=a.getAttribute('href');
+    if(!h||/^(#|https?:|mailto:|tel:|javascript)/.test(h)) return;
+    a.addEventListener('click',function(e){
+      if(e.metaKey||e.ctrlKey||e.shiftKey) return;
+      e.preventDefault();
+      v.style.transition='opacity .38s cubic-bezier(.4,0,.2,1)';
+      v.style.opacity='1';
+      v.style.pointerEvents='all';
+      setTimeout(function(){ window.location.href=h; },400);
+    });
+  });
+}();
+</script>
+</body>
+</html>

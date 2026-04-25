@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — VRASA by Sri Vrushank</title>
+  <meta name="description" content="Contact Sri Vrushank — commissions, bookings, and enquiries." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&family=Space+Mono:ital,wght@0,400;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/vrasa.css">
+  <style>
+    body { background: #0A0A0A; color: #f4f1ea; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      height: 56px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 40px;
+      background: rgba(10,10,10,.97);
+      border-bottom: 1px solid rgba(244,241,234,.1);
+      backdrop-filter: blur(12px);
+    }
+    .nav__logo svg { height: 26px; width: auto; color: #f4f1ea; display: block; }
+    .nav__links {
+      display: flex; gap: 36px;
+      font-family: var(--mono); font-size: 11.5px; letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(244,241,234,.4);
+    }
+    .nav__links a { color: inherit; text-decoration: none; transition: color .2s; }
+    .nav__links a:hover,
+    .nav__links a.is-active { color: #f4f1ea; }
+    .nav__links a.is-active { border-bottom: 1px solid rgba(244,241,234,.4); padding-bottom: 2px; }
+
+    .contact-page {
+      margin-top: 56px;
+      min-height: calc(100vh - 56px);
+      display: flex;
+    }
+
+    /* Left — large decorative side */
+    .contact-left {
+      flex: 0 0 50%;
+      padding: 72px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid rgba(244,241,234,.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-left__bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 30% 70%, rgba(90,40,30,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .contact-left__meta {
+      font-family: var(--mono);
+      font-size:12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+    }
+
+    .contact-left__main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px 0;
+    }
+
+    .contact-left__label {
+      font-family: var(--mono);
+      font-size:12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+      margin-bottom: 16px;
+    }
+
+    .contact-left__heading {
+      font-family: var(--sc);
+      font-size:clamp(40px, 5.5vw, 72px);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      color: #f4f1ea;
+      margin-bottom: 28px;
+    }
+
+    .contact-left__sub {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size:clamp(24px, 1.8vw, 32px);
+      line-height: 1.5;
+      color: rgba(244,241,234,.55);
+      max-width: 360px;
+    }
+
+    .contact-left__availability {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 32px;
+      font-family: var(--mono);
+      font-size:12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+    }
+    .contact-left__availability .dot-green {
+      width: 6px; height: 6px;
+      background: #3a8a3a;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    .contact-left__footer {
+      font-family: var(--mono);
+      font-size:12px;
+      letter-spacing: 0.12em;
+      color: rgba(244,241,234,.38);
+    }
+
+    /* Right — contact details */
+    .contact-right {
+      flex: 1;
+      padding: 72px 52px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .contact-block {
+      margin-bottom: 44px;
+    }
+
+    .contact-block__label {
+      font-family: var(--mono);
+      font-size:12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(244,241,234,.1);
+    }
+
+    .contact-block__value {
+      font-family: var(--serif);
+      font-size:clamp(24px, 2vw, 33px);
+      font-weight: 300;
+      color: #f4f1ea;
+      margin-top: 12px;
+    }
+
+    .contact-block__value a {
+      border-bottom: 1px solid rgba(244,241,234,.15);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .contact-block__value a:hover {
+      border-color: #f4f1ea;
+      color: #f4f1ea;
+    }
+
+    .contact-block__note {
+      font-family: var(--mono);
+      font-size:12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+      margin-top: 6px;
+    }
+
+    /* Social row */
+    .contact-social {
+      display: flex;
+      gap: 28px;
+      margin-top: 8px;
+    }
+    .contact-social a {
+      font-family: var(--mono);
+      font-size:14px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .contact-social a:hover {
+      color: #f4f1ea;
+      border-color: #f4f1ea;
+    }
+
+    /* Disciplines */
+    .contact-disciplines {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .discipline-tag {
+      font-family: var(--mono);
+      font-size:11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+      border: 1px solid rgba(244,241,234,.1);
+      padding: 5px 10px;
+    }
+
+    /* ── ENQUIRY FORM ── */
+    .enquiry-form {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      max-width: 520px;
+    }
+    .enquiry-form__row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .enquiry-form__field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .enquiry-form__label {
+      font-family: var(--mono);
+      font-size:11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+    }
+    .enquiry-form__input {
+      font-family: var(--serif);
+      font-size:16px;
+      font-weight: 300;
+      color: #f4f1ea;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(244,241,234,.1);
+      padding: 8px 0;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .enquiry-form__input:focus { border-bottom-color: #f4f1ea; }
+    .enquiry-form__input::placeholder { color: rgba(244,241,234,.2); font-style: italic; }
+    .enquiry-form__select {
+      cursor: pointer;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(244,241,234,0.4)'/%3E%3C/svg%3E") right center no-repeat;
+    }
+    .enquiry-form__textarea {
+      resize: vertical;
+      min-height: 110px;
+      line-height: 1.6;
+    }
+    .enquiry-form__footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-top: 8px;
+    }
+    .enquiry-form__note {
+      font-family: var(--mono);
+      font-size:11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+      line-height: 1.7;
+    }
+    .enquiry-form__submit {
+      background: #f4f1ea;
+      border: none;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size:14px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #0A0A0A;
+      padding: 13px 22px;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+    }
+    .enquiry-form__submit:hover { opacity: 0.75; }
+
+    /* SUCCESS STATE */
+    .enquiry-success {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      max-width: 400px;
+    }
+    .enquiry-success__icon {
+      width: 44px; height: 44px;
+      border: 1px solid rgba(244,241,234,.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size:20px; color: #f4f1ea;
+    }
+    .enquiry-success__title {
+      font-family: var(--sc);
+      font-size: 19px;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: #f4f1ea;
+      line-height: 1;
+    }
+    .enquiry-success__sub {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size:17px;
+      font-weight: 300;
+      color: rgba(244,241,234,.5);
+    }
+    .enquiry-success__links {
+      font-family: var(--mono);
+      font-size:12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+      margin-top: 8px;
+    }
+    .enquiry-success__links a { border-bottom: 1px solid rgba(244,241,234,.15); transition: border-color 0.2s; }
+    .enquiry-success__links a:hover { border-color: #f4f1ea; color: #f4f1ea; }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .contact-page { flex-direction: column; }
+      .contact-left { flex: none; border-right: none; border-bottom: 1px solid rgba(244,241,234,.1); padding: 52px 28px; }
+      .contact-right { padding: 40px 28px; }
+      .enquiry-form__row { grid-template-columns: 1fr; }
+      .enquiry-form__footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="site-nav__logo" aria-label="VRASA — Home"><svg viewBox="0 0 520 148" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="height:40px;width:auto;color:inherit;display:block;"><text x="260" y="78" text-anchor="middle" font-family="'Playfair Display','Cormorant SC',serif" font-weight="900" font-size="88" letter-spacing="10" fill="currentColor">VRASA</text><g transform="translate(260,96)" stroke-linecap="round" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="-108" y1="0" x2="-22" y2="0"/><line x1="22" y1="0" x2="108" y2="0"/><path d="M -22 0 C -16 -6,-8 -6,-4 -3"/><path d="M 22 0 C 16 -6,8 -6,4 -3"/></g><circle cx="260" cy="96" r="2.2" fill="currentColor"/><text x="260" y="130" text-anchor="middle" font-family="'Cormorant Garamond','Cormorant',Georgia,serif" font-style="italic" font-weight="400" font-size="17" letter-spacing="3" fill="currentColor" opacity="0.72">by Sri Vrashank</text></svg></a>
+  <div class="site-nav__links">
+      <a href="index.html">Home</a>
+      <a href="archive.html">Portfolio</a>
+      <a href="about.html">About</a>
+      <a href="contact.html" class="is-active">Contact</a>
+  </div>
+</nav>
+<div class="page-veil" id="page-veil" aria-hidden="true"></div>
+<main class="contact-page" aria-label="Contact" style="padding-top:72px">
+
+    <div class="contact-left">
+      <div class="contact-left__bg" aria-hidden="true"></div>
+
+      <p class="contact-left__meta">VRASA · Est. 2019 · Vol. 07</p>
+
+      <div class="contact-left__main">
+        <p class="contact-left__label">Now booking</p>
+        <h1 class="contact-left__heading">Get in<br>touch.</h1>
+        <p class="contact-left__sub">
+          Editorial, wedding and portrait commissions — available worldwide. Share a note and I'll come back within two working days.
+        </p>
+        <div class="contact-left__availability">
+          <span class="dot-green" aria-hidden="true"></span>
+          Available for AW26 commissions
+        </div>
+      </div>
+
+      <p class="contact-left__footer">Based in Munich &thinsp;·&thinsp; Available worldwide</p>
+    </div>
+
+    <div class="contact-right">
+
+      <!-- ENQUIRY FORM -->
+      <form class="enquiry-form" id="enquiry-form" novalidate aria-label="Enquiry form">
+
+        <div class="enquiry-form__row">
+          <div class="enquiry-form__field">
+            <label class="enquiry-form__label" for="f-name">Full Name</label>
+            <input class="enquiry-form__input" type="text" id="f-name" name="name"
+                   placeholder="Your name" autocomplete="name" required>
+          </div>
+          <div class="enquiry-form__field">
+            <label class="enquiry-form__label" for="f-email">Email</label>
+            <input class="enquiry-form__input" type="email" id="f-email" name="email"
+                   placeholder="your@email.com" autocomplete="email" required>
+          </div>
+        </div>
+
+        <div class="enquiry-form__field">
+          <label class="enquiry-form__label" for="f-type">Project Type</label>
+          <select class="enquiry-form__input enquiry-form__select" id="f-type" name="type" required>
+            <option value="" disabled selected>Select a discipline</option>
+            <option>Fashion Editorial</option>
+            <option>Wedding</option>
+            <option>Portrait</option>
+            <option>Concert / Event</option>
+            <option>Lookbook / Campaign</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="enquiry-form__field">
+          <label class="enquiry-form__label" for="f-msg">Your Vision</label>
+          <textarea class="enquiry-form__input enquiry-form__textarea" id="f-msg" name="message"
+                    placeholder="Tell me about your project — dates, location, mood, references…" required></textarea>
+        </div>
+
+        <div class="enquiry-form__footer">
+          <p class="enquiry-form__note">Replies within 48 hours · Based in Munich · Available worldwide</p>
+          <button class="enquiry-form__submit" type="submit">Send Enquiry →</button>
+        </div>
+
+      </form>
+
+      <!-- SUCCESS STATE (hidden until submit) -->
+      <div class="enquiry-success" id="enquiry-success" aria-live="polite" hidden>
+        <div class="enquiry-success__icon">✓</div>
+        <h3 class="enquiry-success__title">Message received.</h3>
+        <p class="enquiry-success__sub">I'll be in touch within two working days.</p>
+        <div class="enquiry-success__links">
+          <a href="mailto:srivrushank@gmail.com">srivrushank@gmail.com</a>
+          <span>&thinsp;·&thinsp;</span>
+          <a href="https://instagram.com/svadesi__.arw" target="_blank" rel="noopener">@svadesi__.arw</a>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="assets/js/vrasa.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script>
+  const form    = document.getElementById('enquiry-form');
+  const success = document.getElementById('enquiry-success');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Basic validation
+    const name  = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const type  = document.getElementById('f-type').value;
+    const msg   = document.getElementById('f-msg').value.trim();
+    if (!name || !email || !type || !msg) return;
+
+    // Hide form, show success
+    form.hidden = true;
+    success.hidden = false;
+
+    // Confetti burst
+    const colors = ['#c8a96e', '#2c2c2c', '#f5f0e8', '#8b7355', '#d4af6e'];
+    confetti({ particleCount: 80, spread: 70, origin: { y: 0.55 }, colors, scalar: 1.1 });
+    setTimeout(() =>
+      confetti({ particleCount: 50, spread: 110, origin: { y: 0.45 }, colors, scalar: 0.9 })
+    , 280);
+    setTimeout(() =>
+      confetti({ particleCount: 40, angle: 60, spread: 55, origin: { x: 0, y: 0.6 }, colors })
+    , 500);
+    setTimeout(() =>
+      confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 1, y: 0.6 }, colors })
+    , 500);
+  });
+  </script>
+
+<script>
+/* ── Site nav: scroll-state ── */
+!function(){
+  var n=document.getElementById('site-nav'); if(!n) return;
+  function u(){ n.classList.toggle('is-scrolled',window.scrollY>50); }
+  window.addEventListener('scroll',u,{passive:true}); u();
+}();
+/* ── Page transitions ── */
+!function(){
+  var v=document.getElementById('page-veil'); if(!v) return;
+  // Arrive: flash opaque then fade out
+  v.style.opacity='1'; v.style.transition='none';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      v.style.transition='opacity .52s cubic-bezier(.4,0,.2,1)';
+      v.style.opacity='0';
+    });
+  });
+  // Depart: fade in then navigate
+  document.querySelectorAll('a[href]').forEach(function(a){
+    var h=a.getAttribute('href');
+    if(!h||/^(#|https?:|mailto:|tel:|javascript)/.test(h)) return;
+    a.addEventListener('click',function(e){
+      if(e.metaKey||e.ctrlKey||e.shiftKey) return;
+      e.preventDefault();
+      v.style.transition='opacity .38s cubic-bezier(.4,0,.2,1)';
+      v.style.opacity='1';
+      v.style.pointerEvents='all';
+      setTimeout(function(){ window.location.href=h; },400);
+    });
+  });
+}();
+</script>
+</body>
+</html>

@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VRASA — Sri Vrushank · Fashion Photographer</title>
+  <meta name="description" content="VRASA by Sri Vrushank — fashion, editorial and wedding photography. Based in Munich, available worldwide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&family=Space+Mono:ital,wght@0,400;1,400&family=Caveat:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/vrasa.css">
+  <style>
+
+  /* =====================================================
+     COVER — Section 1
+  ===================================================== */
+  .cover {
+    position:relative; width:100%; height:100vh; min-height:640px;
+    background:#0A0A0A; overflow:hidden;
+  }
+  /* Hero images */
+  .cover__bg {
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:50% 35%;
+    opacity:0; transition:opacity 0.7s ease; z-index:0;
+  }
+  .cover__bg.is-active { opacity:0.96; z-index:1; }
+  /* Scrim — heavier at bottom for legibility */
+  .cover__overlay {
+    position:absolute; inset:0; pointer-events:none; z-index:2;
+    background:linear-gradient(to bottom,
+      rgba(0,0,0,.32) 0%, rgba(0,0,0,.0) 30%,
+      rgba(0,0,0,.0) 48%, rgba(0,0,0,.72) 100%);
+  }
+  
+
+  /* Editorial category tags — above headline */
+  .cover__tags {
+    position:absolute; bottom:420px; left:40px; z-index:10;
+    display:flex; flex-direction:column; gap:7px;
+    font-family:var(--mono); font-size:10px; letter-spacing:.3em; text-transform:uppercase;
+    color:rgba(255,255,255,.8); line-height:1;
+  }
+  .cover__tags-gold { color:#e8c27a; }
+  .cover__tags.fading { opacity:0; }
+
+  /* Large display headline */
+  .cover__headline {
+    position:absolute; bottom:110px; left:40px; max-width:65%; z-index:10;
+    margin:0;
+    font-family:var(--serif); font-style:italic; font-weight:400;
+    font-size:clamp(52px,7vw,96px); line-height:1.02;
+    letter-spacing:-.01em; text-transform:uppercase;
+    color:#fff;
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .cover__headline.fading { opacity:0; transform:translateY(8px); }
+
+  /* Bottom byline strip */
+  .cover__byline {
+    position:absolute; bottom:60px; left:40px; right:40px; z-index:10;
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:var(--mono); font-size:10px; letter-spacing:.26em; text-transform:uppercase;
+    color:rgba(255,255,255,.55);
+  }
+  /* Slide dots + scroll — bottom left */
+  .cover__dots {
+    position:absolute; bottom:26px; left:40px; z-index:10;
+    display:flex; gap:10px; align-items:center;
+  }
+  .cover__dot {
+    width:28px; height:2px; background:rgba(255,255,255,.35);
+    cursor:pointer; transition:background .3s;
+    border:none; padding:0; display:block;
+  }
+  .cover__dot.is-active { background:#e8c27a; }
+  /* Scroll cue — bottom center */
+  .cover__scroll-hint {
+    position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:5px;
+    font-family:var(--mono); font-size:7px; letter-spacing:.22em; text-transform:uppercase;
+    color:rgba(255,255,255,.28); z-index:10; pointer-events:none;
+  }
+  .cover__scroll-hint::after {
+    content:''; width:1px; height:20px; background:rgba(255,255,255,.18);
+    animation:scrollline 1.5s ease-in-out infinite;
+  }
+  @keyframes scrollline {
+    0%,100%{transform:scaleY(0);transform-origin:top}
+    50%{transform:scaleY(1);transform-origin:top}
+  }
+  .vrasa-mark { display:block; }
+  .split__logo-wrap .vrasa-mark { width:clamp(160px,26vw,340px); color:var(--black); }
+
+  /* =====================================================
+     SPLIT — Section 2
+  ===================================================== */
+  .split {
+    display:grid;
+    grid-template-columns:42% 58%;
+    grid-template-rows:1fr auto;
+    height:100vh;
+    overflow:hidden;
+    background:var(--cream);
+  }
+
+  /* SPLIT MASTHEAD — full-width magazine header bar */
+  .split__header {
+    grid-column:1 / -1; grid-row:1;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:16px 40px;
+    border-bottom:1px solid var(--cream-border);
+    background:var(--cream);
+  }
+  .split__header-brand {
+    font-family:var(--mono); font-size:13px; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--black);
+  }
+  .split__header-nav {
+    display:flex; align-items:center; gap:24px;
+    font-family:var(--mono); font-size:12px; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .split__header-nav a {
+    color:var(--muted); text-decoration:none; transition:color .2s;
+  }
+  .split__header-nav a:hover { color:var(--black); }
+  .split__header-nav .sep {
+    width:3px; height:3px; background:var(--cream-border); border-radius:50%;
+    display:inline-block; flex-shrink:0;
+  }
+  .split__header-date {
+    font-family:var(--mono); font-size:13px; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--muted);
+  }
+
+  /* LEFT: identity panel */
+  .split__left {
+    grid-column:1; grid-row:1;
+    padding:52px 48px 40px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    border-right:1px solid var(--cream-border);
+    position:relative;
+  }
+  .split__meta {
+    font-family:var(--mono); font-size:12px; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .split__logo-wrap { flex:1; display:flex; align-items:center; justify-content:center; }
+  .split__logo-wrap .vrasa-mark { width:clamp(180px,30vw,360px); }
+
+  /* Category tagline (below logo, updates on strip click) */
+  .split__cat-tagline {
+    text-align:center;
+    padding:20px 32px 24px;
+    border-top:1px solid var(--cream-border);
+  }
+  .split__cat-label {
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:10px;
+  }
+  .split__cat-quote {
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:clamp(22px,2.4vw,32px); color:var(--black); line-height:1.4;
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .split__cat-tagline.fading .split__cat-quote { opacity:0; transform:translateY(4px); }
+
+  /* Project vision block — replaces email/social links */
+  .split__vision {
+    border-top:1px solid var(--cream-border);
+    padding-top:22px;
+  }
+  .split__vision-headline {
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:clamp(22px,2.2vw,30px); line-height:1.45;
+    color:var(--black); margin-bottom:16px; max-width:340px;
+    transition:opacity .35s ease, transform .35s ease;
+  }
+  .split__vision-headline.fading { opacity:0; transform:translateY(5px); }
+  .split__vision-meta {
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding-top:14px; border-top:1px solid var(--cream-border);
+  }
+  .split__vision-location {
+    font-family:var(--mono); font-size:13px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--muted);
+    transition:opacity .3s ease;
+  }
+  .split__vision-date {
+    font-family:var(--mono); font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted);
+    transition:opacity .3s ease;
+  }
+
+  /* RIGHT: featured editorial */
+  .split__right {
+    grid-column:2; grid-row:1;
+    display:flex; flex-direction:column; background:var(--cream);
+    border-left:1px solid var(--cream-border);
+  }
+  /* Meta row — above the image */
+  .split__feat-meta {
+    flex-shrink:0;
+    padding:14px 40px 8px;
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:var(--mono); font-size:11px; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--muted); line-height:1.8;
+  }
+  /* Portrait-ratio image container */
+  .split__feat-img-wrap {
+    flex:1 1 0;
+    min-height:0;
+    /* Portrait frame: width auto-derived from height via aspect-ratio */
+    aspect-ratio:3/4;
+    width:auto;
+    align-self:center;
+    overflow:hidden; position:relative;
+    background:#1a1a1a;
+    cursor:pointer;
+  }
+  .split__feat-img {
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:center 22%;
+    transition:opacity .6s ease;
+  }
+  .split__feat-img.fade-out { opacity:0; }
+  /* Title + button row — below the image */
+  .split__feat-info {
+    flex-shrink:0;
+    padding:10px 40px 12px;
+    display:flex; justify-content:space-between; align-items:center;
+    border-top:1px solid var(--cream-border);
+  }
+  .split__feat-title {
+    font-family:var(--serif); font-style:italic; font-weight:400;
+    font-size:clamp(20px,2.4vw,36px); color:var(--black); line-height:1.05;
+    margin:0;
+  }
+  .split__feat-sub {
+    font-family:var(--mono); font-size:7.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); margin-top:4px;
+  }
+  .split__open-btn {
+    background:none; border:1px solid var(--black); cursor:pointer;
+    font-family:var(--mono); font-size:8px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--black); padding:9px 16px; white-space:nowrap;
+    transition:background .2s, color .2s; flex-shrink:0; margin-left:20px;
+  }
+  .split__open-btn:hover { background:var(--black); color:var(--cream); }
+
+  /* BOTTOM STRIP */
+  .split__strip {
+    grid-column:1 / -1; grid-row:2;
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--cream-border);
+    background:var(--cream);
+  }
+  .split__strip-item {
+    background:none; border:none; cursor:pointer;
+    padding:12px 20px; text-align:left;
+    border-right:1px solid var(--cream-border);
+    transition:background .2s;
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .split__strip-item:last-child { border-right:none; }
+  .split__strip-item:hover { background:rgba(0,0,0,.03); }
+  .split__strip-item.is-active { background:rgba(0,0,0,.05); }
+  .strip__num {
+    font-family:var(--mono); font-size:10px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .strip__title {
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:clamp(14px,1.55vw,19px); color:var(--black); line-height:1.2;
+  }
+  .strip__cat {
+    font-family:var(--mono); font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .split__strip-item.is-active .strip__title { font-weight:500; }
+  .split__strip-item.is-active .strip__num { color:var(--black); }
+
+  /* =====================================================
+     GALLERY PANEL — full-screen slide-in
+  ===================================================== */
+  .gallery-panel {
+    position:fixed; inset:0; background:var(--cream);
+    z-index:300;
+    transform:translateY(100%);
+    transition:transform .55s cubic-bezier(.25,.46,.45,.94);
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .gallery-panel.is-open { transform:translateY(0); }
+
+  .gallery-panel__header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 28px;
+    border-bottom:1px solid var(--cream-border);
+    flex-shrink:0;
+  }
+  .gallery-panel__back {
+    background:none; border:none; cursor:pointer;
+    font-family:var(--mono); font-size:8px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--muted);
+    padding:0; transition:color .2s;
+  }
+  .gallery-panel__back:hover { color:var(--black); }
+  .gallery-panel__title-wrap {
+    display:flex; align-items:center; gap:16px;
+  }
+  .gallery-panel__title {
+    font-family:var(--sc); font-size:16px; letter-spacing:.06em; color:var(--black);
+  }
+  .gallery-panel__count {
+    font-family:var(--mono); font-size:11px; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .gallery-panel__close {
+    background:none; border:none; cursor:pointer;
+    font-size:20px; color:var(--muted); line-height:1; padding:0;
+    transition:color .2s;
+  }
+  .gallery-panel__close:hover { color:var(--black); }
+  .gallery-panel__body {
+    flex:1; overflow-y:auto; overflow-x:hidden;
+  }
+
+  /* Subfolder cards (3 per row, portrait) */
+  .subfolder-grid {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:2px;
+  }
+  .subfolder-card {
+    position:relative; cursor:pointer; overflow:hidden;
+    aspect-ratio:2/3; background:#1c1c1c;
+  }
+  .subfolder-card img {
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .5s ease;
+  }
+  .subfolder-card:hover img { transform:scale(1.04); }
+  .subfolder-card__overlay {
+    position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(to top,rgba(0,0,0,.82) 0%,transparent 55%);
+  }
+  .subfolder-card__info {
+    position:absolute; bottom:18px; left:18px; right:18px;
+  }
+  .subfolder-card__title {
+    font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:clamp(20px,2.8vw,34px); color:#fff; line-height:1.1; margin-bottom:5px;
+  }
+  .subfolder-card__sub {
+    font-family:var(--mono); font-size:7px; letter-spacing:.15em;
+    text-transform:uppercase; color:rgba(255,255,255,.45);
+  }
+
+  /* Image grid (3 per row) */
+  .img-grid {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:2px;
+  }
+  .img-grid__item {
+    cursor:pointer; overflow:hidden; aspect-ratio:2/3;
+    background:#1c1c1c; position:relative;
+  }
+  .img-grid__item img {
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .45s ease;
+  }
+  .img-grid__item:hover img { transform:scale(1.04); }
+  .img-grid__item__num {
+    position:absolute; top:10px; left:12px;
+    font-family:var(--mono); font-size:7px; letter-spacing:.14em;
+    color:rgba(255,255,255,.4); text-transform:uppercase;
+  }
+
+  /* =====================================================
+     LIGHTBOX
+  ===================================================== */
+  .lb {
+    position:fixed; inset:0; background:rgba(0,0,0,.94);
+    z-index:500; display:none; align-items:center; justify-content:center;
+  }
+  .lb.is-open { display:flex; }
+  .lb__img {
+    max-width:90vw; max-height:88vh; object-fit:contain;
+    display:block; user-select:none;
+  }
+  .lb__close {
+    position:absolute; top:18px; right:22px;
+    background:none; border:none; cursor:pointer;
+    font-size:28px; color:rgba(255,255,255,.7); line-height:1; padding:0;
+    transition:color .2s;
+  }
+  .lb__close:hover { color:#fff; }
+  .lb__btn {
+    position:absolute; top:50%; transform:translateY(-50%);
+    background:none; border:none; cursor:pointer;
+    font-size:36px; color:rgba(255,255,255,.6); line-height:1; padding:16px;
+    transition:color .2s;
+  }
+  .lb__btn:hover { color:#fff; }
+  .lb__prev { left:8px; }
+  .lb__next { right:8px; }
+  .lb__counter {
+    position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+    font-family:var(--mono); font-size:8px; letter-spacing:.18em;
+    text-transform:uppercase; color:rgba(255,255,255,.4);
+  }
+
+  /* =====================================================
+     SITE FOOTER
+  ===================================================== */
+  .site-footer {
+    background:var(--cream); border-top:1px solid var(--cream-border);
+    padding:14px 28px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--mono); font-size:8px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .site-footer__contact {
+    font-family:var(--mono); font-size:9px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--black);
+    border-bottom:1px solid var(--black); padding-bottom:1px;
+    transition:opacity .2s;
+  }
+  .site-footer__contact:hover { opacity:.6; }
+  .site-footer a { transition:color .2s; }
+  .site-footer a:hover { color:var(--black); }
+
+  /* =====================================================
+     TICKER
+  ===================================================== */
+  .site-ticker {
+    background:#0A0A0A; border-top:1px solid rgba(255,255,255,.06);
+    overflow:hidden;
+  }
+  .site-ticker .ticker__track {
+    padding:10px 0;
+    font-family:var(--mono); font-size:7.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:rgba(255,255,255,.3);
+  }
+  .site-ticker .ticker__track span { padding:0 22px; flex-shrink:0; }
+  .site-ticker .ticker__dot { color:rgba(255,255,255,.15); }
+
+  /* =====================================================
+     RESPONSIVE
+  ===================================================== */
+  @media (max-width:900px) {
+    .split { grid-template-columns:1fr; grid-template-rows:1fr auto; height:auto; min-height:100vh; }
+    .split__left { grid-column:1; grid-row:1; border-right:none; border-bottom:1px solid var(--cream-border); padding:40px 28px; }
+    .split__right { grid-column:1; grid-row:2; }
+    .split__feat-img-wrap { flex:0 0 auto; aspect-ratio:3/4; width:calc(100% - 56px); margin:0 28px; align-self:unset; }
+    .split__feat-meta { padding:24px 28px 10px; }
+    .split__feat-info { padding:14px 28px 24px; }
+    .split__strip { grid-column:1; grid-row:3; grid-template-columns:repeat(2,1fr); }
+    .split__strip-item:nth-child(2) { border-right:none; }
+    .split__strip-item:nth-child(3) { border-top:1px solid var(--cream-border); }
+    .split__strip-item:nth-child(4) { border-right:none; border-top:1px solid var(--cream-border); }
+  }
+  @media (max-width:600px) {
+    .cover__logo .vrasa-mark { width:70vw; }
+    .split__strip { grid-template-columns:1fr; }
+    .split__strip-item { border-right:none; border-top:1px solid var(--cream-border); }
+    .subfolder-grid { grid-template-columns:1fr 1fr; }
+    .img-grid { grid-template-columns:1fr 1fr; }
+    .split__feat-info { flex-direction:column; gap:14px; align-items:flex-start; }
+    .split__open-btn { margin-left:0; }
+  }
+  
+  /* =====================================================
+     SECTION 1.5 · SCATTER — Instax rain of photos
+  ===================================================== */
+  .scatter {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 640px;
+    overflow: hidden;
+    background: #0A0A0A;
+  }
+
+  /* Subtle floor line */
+  .scatter::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: rgba(244,241,234,.07);
+  }
+
+  /* Section label top-left */
+  .scatter__label {
+    position: absolute;
+    top: 32px; left: 40px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+    color: rgba(244,241,234,.2);
+    z-index: 10;
+  }
+  .scatter__label span { color: rgba(244,241,234,.08); margin: 0 8px; }
+
+  /* Scroll hint bottom */
+  .scatter__scroll {
+    position: absolute;
+    bottom: 24px; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 9px; letter-spacing: .26em; text-transform: uppercase;
+    color: rgba(244,241,234,.18);
+    z-index: 10; pointer-events: none;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .scatter__scroll::after {
+    content: ''; width: 1px; height: 22px;
+    background: rgba(244,241,234,.12);
+    animation: scrollline 1.5s ease-in-out infinite;
+  }
+
+  /* ── Instax mini card ── */
+  .scard {
+    position: absolute;
+    cursor: pointer;
+    transform-origin: center center;
+    transition: transform .38s cubic-bezier(.23,1,.32,1),
+                box-shadow .38s ease;
+    will-change: transform;
+    background: #fff;
+    /* Instax border: equal sides/top, wide bottom strip */
+    padding: 9px 9px 0 9px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.72), 0 1px 4px rgba(0,0,0,.5);
+  }
+
+  /* The photo area */
+  .scard__img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    object-position: center 20%;
+    filter: brightness(.88) saturate(.88);
+    transition: filter .35s ease;
+  }
+
+  /* Bottom white strip — handwritten title */
+  .scard__strip {
+    background: #fff;
+    padding: 5px 4px 9px 4px;
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .scard__strip-title {
+    font-family: 'Caveat', cursive;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: .01em;
+  }
+  .scard__strip-cat {
+    font-family: 'Caveat', cursive;
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(0,0,0,.38);
+    line-height: 1;
+    margin-top: 1px;
+    letter-spacing: .02em;
+  }
+
+  /* Hover: lift card, brighten photo, show detail */
+  .scard:hover {
+    transform: var(--final-transform) scale(1.28) !important;
+    z-index: 300 !important;
+    box-shadow: 0 28px 80px rgba(0,0,0,.85), 0 4px 16px rgba(0,0,0,.6) !important;
+  }
+  .scard:hover .scard__img {
+    filter: brightness(1.0) saturate(1.12);
+  }
+
+  /* Fall-in animation — each card drops from sky */
+  @keyframes fall-in {
+    0%   { translate: 0 -115vh; opacity: 0; }
+    38%  { opacity: 1; }
+    70%  { translate: 0 12px; }
+    83%  { translate: 0 -7px; }
+    91%  { translate: 0 4px; }
+    100% { translate: 0 0; opacity: 1; }
+  }
+
+  .scard.is-landed {
+    animation: fall-in var(--dur, .9s) var(--delay, 0s) cubic-bezier(.22,.61,.36,1) both;
+  }
+
+  /* ── DARK PALETTE OVERRIDE: split section ── */
+  .split,
+  .split__right,
+  .split__left,
+  .split__strip,
+  .split__strip-item { background: #0A0A0A !important; }
+
+  .split__left { border-right-color: rgba(244,241,234,.08) !important; }
+  .split__meta { color: rgba(244,241,234,.38) !important; }
+  .split__cat-tagline { border-top-color: rgba(244,241,234,.08) !important; }
+  .split__cat-label { color: rgba(244,241,234,.38) !important; }
+  .split__cat-quote { color: #f4f1ea !important; }
+
+  .split__logo-wrap .vrasa-mark { color: #f4f1ea !important; }
+
+  .split__right { border-left-color: rgba(244,241,234,.08) !important; }
+  .split__feat-meta { color: rgba(244,241,234,.38) !important; border-bottom-color: rgba(244,241,234,.08) !important; }
+  .split__feat-meta span { color: rgba(244,241,234,.38) !important; }
+
+  .split__vision { border-top-color: rgba(244,241,234,.08) !important; }
+  .split__vision-headline { color: #f4f1ea !important; }
+  .split__vision-meta { border-top-color: rgba(244,241,234,.08) !important; }
+  .split__vision-location,
+  .split__vision-date { color: rgba(244,241,234,.38) !important; }
+
+  .split__open-btn {
+    color: rgba(244,241,234,.55) !important;
+    border-color: rgba(244,241,234,.18) !important;
+  }
+  .split__open-btn:hover { background: #f4f1ea !important; color: #0A0A0A !important; }
+
+  .split__strip { border-top-color: rgba(244,241,234,.08) !important; }
+  .split__strip-item { border-right-color: rgba(244,241,234,.08) !important; }
+  .split__strip-item.is-active,
+  .split__strip-item:hover { background: rgba(244,241,234,.04) !important; }
+  .strip__cat { color: rgba(244,241,234,.38) !important; }
+  .strip__title { color: #f4f1ea !important; }
+  .strip__num { color: rgba(244,241,234,.38) !important; }
+
+  /* g-nav scrolled state */
+  .g-nav.is-visible { background: rgba(10,10,10,.97) !important; border-bottom-color: rgba(244,241,234,.08) !important; }
+
+  /* site footer */
+  .site-footer { background: #0A0A0A; border-top-color: rgba(244,241,234,.08) !important; color: rgba(244,241,234,.38) !important; }
+  .site-footer a { color: rgba(244,241,234,.38) !important; }
+  .site-footer a:hover { color: #f4f1ea !important; }
+
+  /* ticker stays dark */
+  .site-ticker { border-top-color: rgba(244,241,234,.08) !important; }
+
+  </style>
+<style>
+  html { scroll-behavior: smooth; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="site-nav__logo" aria-label="VRASA — Home"><svg viewBox="0 0 520 148" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="height:40px;width:auto;color:inherit;display:block;"><text x="260" y="78" text-anchor="middle" font-family="'Playfair Display','Cormorant SC',serif" font-weight="900" font-size="88" letter-spacing="10" fill="currentColor">VRASA</text><g transform="translate(260,96)" stroke-linecap="round" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="-108" y1="0" x2="-22" y2="0"/><line x1="22" y1="0" x2="108" y2="0"/><path d="M -22 0 C -16 -6,-8 -6,-4 -3"/><path d="M 22 0 C 16 -6,8 -6,4 -3"/></g><circle cx="260" cy="96" r="2.2" fill="currentColor"/><text x="260" y="130" text-anchor="middle" font-family="'Cormorant Garamond','Cormorant',Georgia,serif" font-style="italic" font-weight="400" font-size="17" letter-spacing="3" fill="currentColor" opacity="0.72">by Sri Vrashank</text></svg></a>
+  <div class="site-nav__links">
+      <a href="index.html" class="is-active">Home</a>
+      <a href="archive.html">Portfolio</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+  </div>
+</nav>
+<div class="page-veil" id="page-veil" aria-hidden="true"></div>
+<!-- Global nav (appears on scroll) -->
+  
+
+
+  <!-- ═══════════════════════════════
+       SECTION 1 · COVER
+  ═══════════════════════════════ -->
+  <section class="cover" id="cover" aria-label="Cover">
+
+    <!-- Hero images — one per category, dot/click switches -->
+    <img class="cover__bg is-active" data-cat="fashion" data-idx="0"
+         src="shoots/fashion/chiaroscuro/01_1-DSC00371.jpg" alt="Fashion — VRASA"
+         style="object-position:50% 15%;">
+    <img class="cover__bg" data-cat="weddings" data-idx="1"
+         src="shoots/weddings/pelli-roju/09_3-DSC00152.jpg" alt="Weddings — VRASA"
+         style="object-position:50% 38%;">
+    <img class="cover__bg" data-cat="portraits" data-idx="2"
+         src="shoots/portraits/studio/10_DSC00218.jpg" alt="Portraits — VRASA"
+         style="object-position:50% 30%;">
+    <img class="cover__bg" data-cat="events" data-idx="3"
+         src="shoots/concerts/wiesn/02_2-A6500277.jpg" alt="Events — VRASA"
+         style="object-position:50% 58%;">
+
+    <div class="cover__overlay" aria-hidden="true"></div>
+
+    
+
+    <!-- Editorial category tags — above headline, update per dot click -->
+    <div class="cover__tags" id="cover-tags" aria-hidden="true">
+      <span id="cover-tag-line1">Fashion · Editorial · Weddings</span>
+      <span class="cover__tags-gold" id="cover-tag-line2">Indo-Western · Vrasa</span>
+    </div>
+
+    <!-- Large display headline — changes with category -->
+    <h1 class="cover__headline" id="cover-headline">
+      Blending<br>Traditions,<br>in Style.
+    </h1>
+
+    <!-- Bottom byline -->
+    <div class="cover__byline" aria-label="Credits">
+      <span>VRASA · By Sri Vrushank · Available in Munich &amp; Worldwide</span>
+      <span>— 01 / 05 —</span>
+    </div>
+
+    <!-- Slide dots — click to switch category -->
+    <div class="cover__dots" id="cover-dots" role="tablist" aria-label="Browse categories">
+      <button class="cover__dot is-active" data-idx="0" aria-label="Fashion"></button>
+      <button class="cover__dot" data-idx="1" aria-label="Weddings"></button>
+      <button class="cover__dot" data-idx="2" aria-label="Portraits"></button>
+      <button class="cover__dot" data-idx="3" aria-label="Events"></button>
+    </div>
+
+    <div class="cover__scroll-hint" aria-hidden="true">Scroll</div>
+  </section>
+
+
+
+  <!-- ═══════════════════════════════
+       SECTION 1.5 · SCATTER
+  ═══════════════════════════════ -->
+  <section class="scatter" id="scatter" aria-label="Projects at a glance">
+    <p class="scatter__label">Selected Work<span>/</span>2019 – 2026</p>
+    <div id="scatter-stage"></div>
+    <p class="scatter__scroll" aria-hidden="true">Scroll</p>
+  </section>
+
+  <script>
+  /* ── SCATTER DATA — all 130 images ── */
+  const SCATTER_ITEMS = [
+  { src:'shoots/concerts/wiesn/01_1-A6500067.jpg', title:'Wiesn', cat:'Events', w:139, left:-1.5, top:26.7, rot:14.5, z:2, delay:0.035, dur:0.71 },
+  { src:'shoots/concerts/wiesn/02_2-A6500277.jpg', title:'Wiesn', cat:'Events', w:137, left:18.1, top:64.3, rot:14.0, z:4, delay:0.047, dur:0.8 },
+  { src:'shoots/concerts/wiesn/03_3-A6500298.jpg', title:'Wiesn', cat:'Events', w:132, left:72.6, top:41.6, rot:6.7, z:2, delay:0.046, dur:0.73 },
+  { src:'shoots/concerts/wiesn/04_4-A6500303.jpg', title:'Wiesn', cat:'Events', w:154, left:57.0, top:62.8, rot:-19.5, z:9, delay:0.078, dur:0.92 },
+  { src:'shoots/fashion/amsterdam/01_1-DSC00031.jpg', title:'Amsterdam', cat:'Fashion', w:155, left:54.3, top:64.5, rot:-7.0, z:5, delay:0.107, dur:0.99 },
+  { src:'shoots/fashion/amsterdam/02_2-DSC00158.jpg', title:'Amsterdam', cat:'Fashion', w:142, left:33.4, top:14.5, rot:14.0, z:3, delay:0.132, dur:0.79 },
+  { src:'shoots/fashion/amsterdam/03_3-DSC00512.jpg', title:'Amsterdam', cat:'Fashion', w:161, left:34.3, top:36.6, rot:-16.2, z:1, delay:0.168, dur:0.84 },
+  { src:'shoots/fashion/amsterdam/04_4-DSC01811.jpg', title:'Amsterdam', cat:'Fashion', w:136, left:17.3, top:45.7, rot:-18.5, z:5, delay:0.148, dur:0.96 },
+  { src:'shoots/fashion/amsterdam/05_5-DSC01823.jpg', title:'Amsterdam', cat:'Fashion', w:166, left:22.5, top:58.2, rot:6.7, z:9, delay:0.19, dur:0.96 },
+  { src:'shoots/fashion/amsterdam/06_6-DSC01867.jpg', title:'Amsterdam', cat:'Fashion', w:139, left:11.4, top:24.6, rot:9.5, z:8, delay:0.212, dur:1.04 },
+  { src:'shoots/fashion/amsterdam/07_7-DSC01869.jpg', title:'Amsterdam', cat:'Fashion', w:132, left:64.7, top:15.8, rot:-16.1, z:5, delay:0.226, dur:0.86 },
+  { src:'shoots/fashion/amsterdam/08_8-DSC01921.jpg', title:'Amsterdam', cat:'Fashion', w:148, left:94.2, top:71.7, rot:13.6, z:9, delay:0.257, dur:0.75 },
+  { src:'shoots/fashion/amsterdam/09_9-DSC01924.jpg', title:'Amsterdam', cat:'Fashion', w:142, left:50.5, top:74.0, rot:-8.5, z:6, delay:0.293, dur:0.99 },
+  { src:'shoots/fashion/amsterdam/10_10-DSC01938.jpg', title:'Amsterdam', cat:'Fashion', w:151, left:20.2, top:65.1, rot:15.4, z:13, delay:0.292, dur:0.74 },
+  { src:'shoots/fashion/amsterdam/11_11-DSC02100.jpg', title:'Amsterdam', cat:'Fashion', w:162, left:91.6, top:24.6, rot:19.4, z:13, delay:0.324, dur:0.77 },
+  { src:'shoots/fashion/amsterdam/12_12-DSC02104.jpg', title:'Amsterdam', cat:'Fashion', w:151, left:36.3, top:39.3, rot:-10.7, z:2, delay:0.32, dur:0.91 },
+  { src:'shoots/fashion/amsterdam/13_13-DSC02466.jpg', title:'Amsterdam', cat:'Fashion', w:146, left:55.4, top:27.6, rot:-4.1, z:6, delay:0.324, dur:0.78 },
+  { src:'shoots/fashion/amsterdam/14_14-DSC02473.jpg', title:'Amsterdam', cat:'Fashion', w:163, left:17.6, top:23.2, rot:11.0, z:13, delay:0.364, dur:0.73 },
+  { src:'shoots/fashion/amsterdam/15_15-DSC02571.jpg', title:'Amsterdam', cat:'Fashion', w:159, left:31.8, top:70.4, rot:14.1, z:1, delay:0.384, dur:0.82 },
+  { src:'shoots/fashion/amsterdam/16_16-DSC02602.jpg', title:'Amsterdam', cat:'Fashion', w:138, left:21.1, top:35.3, rot:-7.7, z:2, delay:0.407, dur:1.0 },
+  { src:'shoots/fashion/amsterdam/17_17-DSC02879.jpg', title:'Amsterdam', cat:'Fashion', w:167, left:5.9, top:73.5, rot:4.6, z:4, delay:0.41, dur:0.87 },
+  { src:'shoots/fashion/amsterdam/18_18-DSC02893.jpg', title:'Amsterdam', cat:'Fashion', w:145, left:83.3, top:4.3, rot:-16.3, z:12, delay:0.477, dur:1.05 },
+  { src:'shoots/fashion/amsterdam/19_19-DSC03162.jpg', title:'Amsterdam', cat:'Fashion', w:167, left:62.8, top:62.9, rot:4.0, z:1, delay:0.485, dur:0.72 },
+  { src:'shoots/fashion/amsterdam/20_20-DSC03166.jpg', title:'Amsterdam', cat:'Fashion', w:169, left:44.2, top:9.3, rot:-4.2, z:14, delay:0.474, dur:0.74 },
+  { src:'shoots/fashion/bazaar/01_DSC00299.jpg', title:'Bazaar', cat:'Fashion', w:168, left:20.9, top:57.8, rot:12.9, z:5, delay:0.492, dur:0.95 },
+  { src:'shoots/fashion/bazaar/02_DSC01686-Edit.jpg', title:'Bazaar', cat:'Fashion', w:147, left:22.8, top:27.9, rot:18.8, z:1, delay:0.527, dur:1.05 },
+  { src:'shoots/fashion/bazaar/03_DSC01715-Edit.jpg', title:'Bazaar', cat:'Fashion', w:138, left:3.4, top:14.8, rot:18.0, z:6, delay:0.537, dur:0.85 },
+  { src:'shoots/fashion/bazaar/04_DSC01819.jpg', title:'Bazaar', cat:'Fashion', w:166, left:67.1, top:49.0, rot:3.1, z:5, delay:0.596, dur:0.74 },
+  { src:'shoots/fashion/bazaar/Hero_meghana_indo_western.jpg', title:'Bazaar', cat:'Fashion', w:140, left:22.7, top:46.6, rot:8.8, z:14, delay:0.576, dur:0.87 },
+  { src:'shoots/fashion/chiaroscuro/01_1-DSC00371.jpg', title:'Chiaroscuro', cat:'Fashion', w:135, left:5.3, top:73.8, rot:16.1, z:5, delay:0.59, dur:0.85 },
+  { src:'shoots/fashion/chiaroscuro/02_2-DSC00523.jpg', title:'Chiaroscuro', cat:'Fashion', w:159, left:52.7, top:17.3, rot:-5.5, z:6, delay:0.635, dur:0.75 },
+  { src:'shoots/fashion/chiaroscuro/03_3-DSC01097.jpg', title:'Chiaroscuro', cat:'Fashion', w:140, left:0.2, top:17.8, rot:-3.7, z:11, delay:0.635, dur:0.74 },
+  { src:'shoots/fashion/chiaroscuro/04_4-DSC01218.jpg', title:'Chiaroscuro', cat:'Fashion', w:167, left:85.3, top:64.0, rot:18.8, z:13, delay:0.689, dur:1.01 },
+  { src:'shoots/fashion/chiaroscuro/05_5-DSC01222.jpg', title:'Chiaroscuro', cat:'Fashion', w:133, left:14.1, top:34.5, rot:-7.2, z:12, delay:0.666, dur:1.01 },
+  { src:'shoots/fashion/chiaroscuro/06_6-DSC01233.jpg', title:'Chiaroscuro', cat:'Fashion', w:162, left:18.5, top:55.5, rot:-3.4, z:6, delay:0.697, dur:0.72 },
+  { src:'shoots/fashion/court/01_1-DSC03791.jpg', title:'Court', cat:'Fashion', w:149, left:31.5, top:34.0, rot:-8.6, z:5, delay:0.711, dur:1.04 },
+  { src:'shoots/fashion/court/02_2-DSC03795.jpg', title:'Court', cat:'Fashion', w:148, left:-0.1, top:41.9, rot:10.4, z:2, delay:0.743, dur:0.9 },
+  { src:'shoots/fashion/court/03_3-DSC04060.jpg', title:'Court', cat:'Fashion', w:148, left:0.5, top:32.2, rot:14.7, z:12, delay:0.78, dur:0.83 },
+  { src:'shoots/fashion/court/04_4-DSC04099.jpg', title:'Court', cat:'Fashion', w:136, left:91.8, top:38.8, rot:11.6, z:6, delay:0.784, dur:0.8 },
+  { src:'shoots/fashion/court/05_5-DSC04378.jpg', title:'Court', cat:'Fashion', w:140, left:15.4, top:47.6, rot:6.0, z:7, delay:0.813, dur:0.7 },
+  { src:'shoots/fashion/court/06_6-DSC04425.jpg', title:'Court', cat:'Fashion', w:150, left:17.2, top:67.3, rot:10.5, z:9, delay:0.828, dur:1.02 },
+  { src:'shoots/fashion/court/07_7-DSC04432.jpg', title:'Court', cat:'Fashion', w:142, left:62.5, top:32.5, rot:4.6, z:4, delay:0.86, dur:0.78 },
+  { src:'shoots/fashion/court/08_8-DSC04491.jpg', title:'Court', cat:'Fashion', w:144, left:10.9, top:12.6, rot:-16.1, z:11, delay:0.875, dur:0.95 },
+  { src:'shoots/fashion/court/09_9-DSC04549.jpg', title:'Court', cat:'Fashion', w:156, left:45.9, top:73.3, rot:15.8, z:2, delay:0.907, dur:0.78 },
+  { src:'shoots/fashion/court/10_10-DSC04601.jpg', title:'Court', cat:'Fashion', w:165, left:42.9, top:68.8, rot:-5.3, z:9, delay:0.939, dur:0.91 },
+  { src:'shoots/fashion/roots/01_1-DSC00055.jpg', title:'Roots', cat:'Fashion', w:160, left:57.9, top:46.7, rot:12.3, z:12, delay:0.952, dur:0.86 },
+  { src:'shoots/fashion/roots/02_2-DSC00291.jpg', title:'Roots', cat:'Fashion', w:147, left:80.8, top:38.6, rot:-7.1, z:12, delay:0.937, dur:0.8 },
+  { src:'shoots/fashion/roots/03_3-DSC00388.jpg', title:'Roots', cat:'Fashion', w:152, left:86.2, top:25.1, rot:-5.6, z:7, delay:0.964, dur:0.89 },
+  { src:'shoots/fashion/roots/04_4-DSC01247.jpg', title:'Roots', cat:'Fashion', w:158, left:2.3, top:73.6, rot:18.0, z:8, delay:0.96, dur:0.82 },
+  { src:'shoots/fashion/roots/05_5-DSC01296.jpg', title:'Roots', cat:'Fashion', w:156, left:82.2, top:57.9, rot:-6.7, z:7, delay:1.009, dur:0.84 },
+  { src:'shoots/fashion/roots/06_6-DSC01524.jpg', title:'Roots', cat:'Fashion', w:157, left:69.1, top:42.5, rot:12.1, z:10, delay:1.034, dur:0.71 },
+  { src:'shoots/fashion/runway/01_1-DSC04885.jpg', title:'Runway', cat:'Fashion', w:159, left:9.7, top:54.1, rot:-6.6, z:13, delay:1.073, dur:0.8 },
+  { src:'shoots/fashion/runway/02_2-DSC05005.jpg', title:'Runway', cat:'Fashion', w:158, left:21.5, top:58.6, rot:14.1, z:11, delay:1.042, dur:0.71 },
+  { src:'shoots/portraits/street/01_DSC00006.jpg', title:'Street', cat:'Portraits', w:147, left:16.1, top:22.9, rot:6.7, z:13, delay:1.082, dur:0.91 },
+  { src:'shoots/portraits/street/02_DSC00021.jpg', title:'Street', cat:'Portraits', w:139, left:74.6, top:25.6, rot:18.8, z:7, delay:1.104, dur:0.95 },
+  { src:'shoots/portraits/street/03_DSC00037.jpg', title:'Street', cat:'Portraits', w:136, left:55.8, top:52.3, rot:16.7, z:10, delay:1.147, dur:0.82 },
+  { src:'shoots/portraits/street/04_DSC00060.jpg', title:'Street', cat:'Portraits', w:159, left:62.8, top:69.5, rot:-10.1, z:7, delay:1.178, dur:0.92 },
+  { src:'shoots/portraits/street/05_DSC00078.jpg', title:'Street', cat:'Portraits', w:161, left:67.4, top:21.3, rot:7.6, z:9, delay:1.186, dur:0.86 },
+  { src:'shoots/portraits/street/06_DSC00084.jpg', title:'Street', cat:'Portraits', w:169, left:23.1, top:72.8, rot:-18.0, z:8, delay:1.194, dur:0.93 },
+  { src:'shoots/portraits/street/07_DSC00105.jpg', title:'Street', cat:'Portraits', w:153, left:-1.1, top:42.0, rot:18.0, z:5, delay:1.213, dur:0.88 },
+  { src:'shoots/portraits/street/08_DSC00119.jpg', title:'Street', cat:'Portraits', w:144, left:4.6, top:50.4, rot:14.7, z:8, delay:1.227, dur:0.71 },
+  { src:'shoots/portraits/street/09_DSC00127.jpg', title:'Street', cat:'Portraits', w:150, left:18.4, top:56.0, rot:11.0, z:7, delay:1.28, dur:0.89 },
+  { src:'shoots/portraits/street/10_DSC00158.jpg', title:'Street', cat:'Portraits', w:154, left:67.0, top:62.2, rot:-6.3, z:9, delay:1.297, dur:0.94 },
+  { src:'shoots/portraits/street/11_DSC00189.jpg', title:'Street', cat:'Portraits', w:144, left:17.9, top:21.9, rot:-11.9, z:2, delay:1.31, dur:0.8 },
+  { src:'shoots/portraits/street/12_DSC00198.jpg', title:'Street', cat:'Portraits', w:155, left:14.1, top:13.8, rot:19.6, z:12, delay:1.337, dur:0.92 },
+  { src:'shoots/portraits/street/13_DSC00218.jpg', title:'Street', cat:'Portraits', w:163, left:6.4, top:8.7, rot:8.8, z:5, delay:1.356, dur:0.87 },
+  { src:'shoots/portraits/street/14_DSC00228.jpg', title:'Street', cat:'Portraits', w:136, left:36.5, top:58.6, rot:5.5, z:5, delay:1.325, dur:0.79 },
+  { src:'shoots/portraits/street/15_DSC00274.jpg', title:'Street', cat:'Portraits', w:167, left:73.2, top:65.6, rot:-11.9, z:8, delay:1.358, dur:0.91 },
+  { src:'shoots/portraits/street/16_DSC00286.jpg', title:'Street', cat:'Portraits', w:159, left:26.8, top:45.6, rot:-19.1, z:4, delay:1.376, dur:0.73 },
+  { src:'shoots/portraits/street/17_DSC00294.jpg', title:'Street', cat:'Portraits', w:147, left:13.6, top:58.0, rot:6.9, z:12, delay:1.432, dur:0.72 },
+  { src:'shoots/portraits/street/18_DSC00297.jpg', title:'Street', cat:'Portraits', w:146, left:89.3, top:58.1, rot:-18.9, z:9, delay:1.413, dur:0.75 },
+  { src:'shoots/portraits/street/19_DSC00299.jpg', title:'Street', cat:'Portraits', w:149, left:79.5, top:27.7, rot:15.7, z:5, delay:1.446, dur:0.86 },
+  { src:'shoots/portraits/street/20_DSC00302.jpg', title:'Street', cat:'Portraits', w:151, left:66.7, top:71.9, rot:-10.3, z:5, delay:1.442, dur:0.78 },
+  { src:'shoots/portraits/street/21_DSC00303.jpg', title:'Street', cat:'Portraits', w:168, left:55.3, top:6.7, rot:12.8, z:3, delay:1.488, dur:0.93 },
+  { src:'shoots/portraits/street/22_DSC00310.jpg', title:'Street', cat:'Portraits', w:149, left:14.3, top:54.5, rot:-4.6, z:6, delay:1.499, dur:0.74 },
+  { src:'shoots/portraits/street/23_DSC01686-Edit.jpg', title:'Street', cat:'Portraits', w:142, left:29.3, top:36.6, rot:16.8, z:8, delay:1.505, dur:0.79 },
+  { src:'shoots/portraits/street/24_DSC01715-Edit.jpg', title:'Street', cat:'Portraits', w:139, left:94.0, top:16.9, rot:14.2, z:7, delay:1.523, dur:0.88 },
+  { src:'shoots/portraits/street/25_DSC01819.jpg', title:'Street', cat:'Portraits', w:163, left:59.2, top:55.2, rot:-14.9, z:11, delay:1.577, dur:0.78 },
+  { src:'shoots/portraits/street/26_DSC08656_14.35.26.jpg', title:'Street', cat:'Portraits', w:142, left:27.4, top:15.6, rot:-17.3, z:2, delay:1.599, dur:0.75 },
+  { src:'shoots/portraits/studio/01_DSC00006.jpg', title:'Studio', cat:'Portraits', w:150, left:47.4, top:13.8, rot:7.1, z:7, delay:1.591, dur:0.91 },
+  { src:'shoots/portraits/studio/02_DSC00021.jpg', title:'Studio', cat:'Portraits', w:140, left:83.3, top:42.2, rot:18.9, z:14, delay:1.6, dur:0.95 },
+  { src:'shoots/portraits/studio/03_DSC00105.jpg', title:'Studio', cat:'Portraits', w:169, left:54.6, top:59.4, rot:-11.2, z:13, delay:1.653, dur:0.86 },
+  { src:'shoots/portraits/studio/04_DSC00148-3.jpg', title:'Studio', cat:'Portraits', w:152, left:83.8, top:48.7, rot:-8.4, z:13, delay:1.663, dur:1.05 },
+  { src:'shoots/portraits/studio/05_DSC00151.jpg', title:'Studio', cat:'Portraits', w:141, left:46.0, top:11.7, rot:17.8, z:8, delay:1.666, dur:1.02 },
+  { src:'shoots/portraits/studio/06_DSC00158.jpg', title:'Studio', cat:'Portraits', w:132, left:69.0, top:64.1, rot:11.0, z:6, delay:1.717, dur:0.84 },
+  { src:'shoots/portraits/studio/07_DSC00159-2.jpg', title:'Studio', cat:'Portraits', w:137, left:82.0, top:68.1, rot:8.4, z:13, delay:1.729, dur:0.89 },
+  { src:'shoots/portraits/studio/08_DSC00197.jpg', title:'Studio', cat:'Portraits', w:136, left:19.7, top:67.3, rot:4.5, z:13, delay:1.758, dur:1.01 },
+  { src:'shoots/portraits/studio/09_DSC00210.jpg', title:'Studio', cat:'Portraits', w:160, left:12.8, top:48.4, rot:-10.3, z:7, delay:1.774, dur:0.98 },
+  { src:'shoots/portraits/studio/10_DSC00218.jpg', title:'Studio', cat:'Portraits', w:142, left:13.7, top:47.6, rot:11.5, z:4, delay:1.788, dur:0.79 },
+  { src:'shoots/portraits/studio/11_DSC00228.jpg', title:'Studio', cat:'Portraits', w:148, left:63.4, top:66.8, rot:19.1, z:5, delay:1.818, dur:0.85 },
+  { src:'shoots/portraits/studio/12_DSC00240-Edit.jpg', title:'Studio', cat:'Portraits', w:148, left:42.1, top:22.9, rot:-4.8, z:6, delay:1.834, dur:1.05 },
+  { src:'shoots/portraits/studio/13_DSC00274.jpg', title:'Studio', cat:'Portraits', w:150, left:-1.8, top:5.5, rot:19.6, z:12, delay:1.85, dur:1.02 },
+  { src:'shoots/portraits/studio/14_DSC00286.jpg', title:'Studio', cat:'Portraits', w:150, left:74.3, top:51.9, rot:-6.2, z:13, delay:1.883, dur:0.93 },
+  { src:'shoots/portraits/studio/15_DSC00294.jpg', title:'Studio', cat:'Portraits', w:140, left:59.5, top:36.0, rot:-15.5, z:5, delay:1.88, dur:0.85 },
+  { src:'shoots/portraits/studio/16_DSC00297.jpg', title:'Studio', cat:'Portraits', w:144, left:9.3, top:50.8, rot:18.5, z:5, delay:1.935, dur:1.03 },
+  { src:'shoots/portraits/studio/17_DSC00302.jpg', title:'Studio', cat:'Portraits', w:150, left:71.4, top:17.8, rot:5.4, z:14, delay:1.941, dur:0.94 },
+  { src:'shoots/portraits/studio/18_DSC00303.jpg', title:'Studio', cat:'Portraits', w:157, left:93.7, top:44.2, rot:14.4, z:14, delay:1.958, dur:0.83 },
+  { src:'shoots/portraits/studio/19_DSC00310.jpg', title:'Studio', cat:'Portraits', w:146, left:43.6, top:62.2, rot:13.4, z:11, delay:1.989, dur:1.02 },
+  { src:'shoots/portraits/studio/20_DSC08656_14.35.26.jpg', title:'Studio', cat:'Portraits', w:151, left:61.6, top:37.2, rot:7.0, z:7, delay:1.987, dur:0.93 },
+  { src:'shoots/weddings/pelli-roju/01_1-DSC00075.jpg', title:'Pelli Roju', cat:'Weddings', w:166, left:38.3, top:46.5, rot:9.9, z:1, delay:2.021, dur:0.78 },
+  { src:'shoots/weddings/pelli-roju/02_1-DSC00605.jpg', title:'Pelli Roju', cat:'Weddings', w:160, left:92.0, top:31.4, rot:-9.1, z:4, delay:2.058, dur:1.03 },
+  { src:'shoots/weddings/pelli-roju/03_1-DSC02560.jpg', title:'Pelli Roju', cat:'Weddings', w:161, left:5.3, top:12.6, rot:-3.9, z:3, delay:2.067, dur:0.77 },
+  { src:'shoots/weddings/pelli-roju/04_1-DSC04669.jpg', title:'Pelli Roju', cat:'Weddings', w:167, left:16.9, top:43.0, rot:5.5, z:1, delay:2.057, dur:1.04 },
+  { src:'shoots/weddings/pelli-roju/05_2-096A9595.jpg', title:'Pelli Roju', cat:'Weddings', w:140, left:50.6, top:38.5, rot:-3.3, z:3, delay:2.105, dur:0.88 },
+  { src:'shoots/weddings/pelli-roju/06_2-DSC00147.jpg', title:'Pelli Roju', cat:'Weddings', w:136, left:44.1, top:71.8, rot:11.6, z:1, delay:2.124, dur:1.02 },
+  { src:'shoots/weddings/pelli-roju/07_2-DSC00643.jpg', title:'Pelli Roju', cat:'Weddings', w:165, left:26.5, top:36.4, rot:10.5, z:6, delay:2.136, dur:0.72 },
+  { src:'shoots/weddings/pelli-roju/08_2-DSC02564.jpg', title:'Pelli Roju', cat:'Weddings', w:149, left:59.1, top:59.0, rot:-13.2, z:9, delay:2.156, dur:0.73 },
+  { src:'shoots/weddings/pelli-roju/09_3-DSC00152.jpg', title:'Pelli Roju', cat:'Weddings', w:139, left:82.1, top:48.1, rot:-6.7, z:4, delay:2.165, dur:0.99 },
+  { src:'shoots/weddings/pelli-roju/10_3-DSC00248.jpg', title:'Pelli Roju', cat:'Weddings', w:157, left:38.0, top:16.6, rot:-9.4, z:8, delay:2.164, dur:0.99 },
+  { src:'shoots/weddings/pelli-roju/11_3-DSC00945.jpg', title:'Pelli Roju', cat:'Weddings', w:137, left:39.6, top:71.0, rot:4.0, z:9, delay:2.2, dur:0.74 },
+  { src:'shoots/weddings/pelli-roju/12_3-DSC02565.jpg', title:'Pelli Roju', cat:'Weddings', w:154, left:84.2, top:64.2, rot:-11.6, z:8, delay:2.213, dur:0.74 },
+  { src:'shoots/weddings/pelli-roju/13_4-DSC00297.jpg', title:'Pelli Roju', cat:'Weddings', w:167, left:33.1, top:50.7, rot:17.4, z:14, delay:2.257, dur:0.94 },
+  { src:'shoots/weddings/pelli-roju/14_4-DSC00458.jpg', title:'Pelli Roju', cat:'Weddings', w:167, left:-1.3, top:27.8, rot:-8.3, z:1, delay:2.251, dur:0.75 },
+  { src:'shoots/weddings/pelli-roju/15_4-DSC00948.jpg', title:'Pelli Roju', cat:'Weddings', w:157, left:3.0, top:71.8, rot:-12.0, z:8, delay:2.28, dur:0.83 },
+  { src:'shoots/weddings/pelli-roju/16_4-DSC02566.jpg', title:'Pelli Roju', cat:'Weddings', w:152, left:74.5, top:71.8, rot:5.7, z:11, delay:2.285, dur:0.86 },
+  { src:'shoots/weddings/pelli-roju/17_5-DSC00571.jpg', title:'Pelli Roju', cat:'Weddings', w:159, left:45.1, top:35.2, rot:-4.9, z:5, delay:2.341, dur:0.91 },
+  { src:'shoots/weddings/pelli-roju/18_5-DSC00741.jpg', title:'Pelli Roju', cat:'Weddings', w:165, left:63.4, top:12.7, rot:-3.1, z:4, delay:2.366, dur:0.97 },
+  { src:'shoots/weddings/pelli-roju/19_5-DSC02568.jpg', title:'Pelli Roju', cat:'Weddings', w:150, left:29.1, top:14.1, rot:9.5, z:9, delay:2.374, dur:0.93 },
+  { src:'shoots/weddings/pelli-roju/20_6-096A8646.jpg', title:'Pelli Roju', cat:'Weddings', w:154, left:3.3, top:6.2, rot:12.8, z:12, delay:2.398, dur:0.8 },
+  { src:'shoots/weddings/pelli-roju/21_6-DSC00593.jpg', title:'Pelli Roju', cat:'Weddings', w:157, left:-1.9, top:35.1, rot:17.1, z:2, delay:2.406, dur:0.74 },
+  { src:'shoots/weddings/pelli-roju/22_6-DSC00772.jpg', title:'Pelli Roju', cat:'Weddings', w:159, left:55.5, top:59.7, rot:-8.8, z:3, delay:2.405, dur:0.92 },
+  { src:'shoots/weddings/pelli-roju/23_7-DSC00712.jpg', title:'Pelli Roju', cat:'Weddings', w:165, left:47.5, top:48.1, rot:-7.0, z:4, delay:2.43, dur:0.75 },
+  { src:'shoots/weddings/pelli-roju/24_7-DSC00812.jpg', title:'Pelli Roju', cat:'Weddings', w:136, left:13.9, top:53.8, rot:-15.9, z:10, delay:2.479, dur:1.05 },
+  { src:'shoots/weddings/pelli-roju/25_8-DSC00715.jpg', title:'Pelli Roju', cat:'Weddings', w:152, left:83.3, top:71.6, rot:-10.5, z:5, delay:2.495, dur:0.82 },
+  { src:'shoots/weddings/pelli-roju/26_8-DSC00850.jpg', title:'Pelli Roju', cat:'Weddings', w:136, left:27.4, top:31.7, rot:4.3, z:14, delay:2.485, dur:0.91 },
+  { src:'shoots/weddings/pelli-roju/27_9-DSC00763.jpg', title:'Pelli Roju', cat:'Weddings', w:156, left:42.7, top:33.0, rot:10.6, z:11, delay:2.511, dur:0.91 },
+  { src:'shoots/weddings/pelli-roju/28_9-DSC01099.jpg', title:'Pelli Roju', cat:'Weddings', w:164, left:11.2, top:69.5, rot:-7.2, z:8, delay:2.551, dur:0.91 },
+  { src:'shoots/weddings/pelli-roju/29_10-DSC00787.jpg', title:'Pelli Roju', cat:'Weddings', w:155, left:33.7, top:47.1, rot:13.2, z:11, delay:2.56, dur:0.82 },
+  { src:'shoots/weddings/pelli-roju/30_11-DSC00847.jpg', title:'Pelli Roju', cat:'Weddings', w:167, left:64.5, top:30.8, rot:18.4, z:6, delay:2.565, dur:0.93 },
+  { src:'shoots/weddings/pelli-roju/31_14-DSC07369.jpg', title:'Pelli Roju', cat:'Weddings', w:154, left:27.3, top:69.9, rot:-15.1, z:9, delay:2.603, dur:0.98 }
+];
+
+  (function buildScatter() {
+    const stage = document.getElementById('scatter-stage');
+    if (!stage) return;
+
+    SCATTER_ITEMS.forEach(function(item) {
+      const rot = item.rot + 'deg';
+      const finalT = 'rotate(' + rot + ')';
+
+      const card = document.createElement('div');
+      card.className = 'scard';
+      card.style.cssText = [
+        'width:' + item.w + 'px',
+        'left:' + item.left + '%',
+        'top:' + item.top + '%',
+        'z-index:' + item.z,
+        'transform:' + finalT,
+        '--final-transform:' + finalT,
+        '--delay:' + item.delay + 's',
+        '--dur:' + item.dur + 's',
+        'translate:0 -115vh',
+        'opacity:0',
+      ].join(';');
+
+      card.innerHTML =
+        '<img class="scard__img" src="' + item.src + '" alt="' + item.title + '" loading="lazy">' +
+        '<div class="scard__strip">' +
+          '<span class="scard__strip-title">' + item.title + '</span>' +
+          '<span class="scard__strip-cat">' + item.cat + '</span>' +
+        '</div>';
+
+      stage.appendChild(card);
+    });
+
+    /* Trigger animation when section enters viewport (once) */
+    const section = document.getElementById('scatter');
+    let fired = false;
+    const obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting && !fired) {
+        fired = true;
+        /* Stagger: let CSS --delay drive timing */
+        document.querySelectorAll('.scard').forEach(function(c) {
+          c.classList.add('is-landed');
+        });
+        obs.disconnect();
+      }
+    }, { threshold: 0.08 });
+    obs.observe(section);
+  })();
+  </script>
+
+  <!-- ═══════════════════════════════
+       SECTION 2 · THE SPLIT
+  ═══════════════════════════════ -->
+  <section class="split" id="journal" aria-label="Portfolio">
+
+    <!-- MASTHEAD — magazine header bar spanning both columns -->
+
+    <!-- LEFT: VRASA identity -->
+    <div class="split__left">
+      <p class="split__meta">Issue 07 &thinsp;/&thinsp; Est. 2019</p>
+
+      <div class="split__logo-wrap">
+        <svg class="vrasa-mark" viewBox="0 0 520 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VRASA — by Sri Vrushank">
+          <text x="260" y="88" text-anchor="middle" font-family="'Playfair Display','Cormorant SC',serif" font-weight="900" font-size="92" letter-spacing="10" fill="currentColor">VRASA</text>
+          <g transform="translate(260,108)" stroke-linecap="round" fill="none" stroke="currentColor" stroke-width="1.1">
+            <line x1="-108" y1="0" x2="-22" y2="0"/>
+            <line x1="22" y1="0" x2="108" y2="0"/>
+            <path d="M -22 0 C -16 -5,-8 -5,-4 -2.5"/>
+            <path d="M 22 0 C 16 -5,8 -5,4 -2.5"/>
+          </g>
+          <circle cx="260" cy="108" r="2.5" fill="currentColor"/>
+          <text x="260" y="148" text-anchor="middle" font-family="'Cormorant Garamond','Cormorant',serif" font-weight="400" font-style="italic" font-size="26" letter-spacing="1" fill="currentColor" opacity="0.82">by Sri Vrashank</text>
+        </svg>
+      </div>
+
+      <!-- Category tagline (updates when bottom strip is clicked) -->
+      <div class="split__cat-tagline" id="split-cat-tagline">
+        <p class="split__cat-label" id="split-cat-label">Fashion</p>
+        <p class="split__cat-quote" id="split-cat-quote">I make photographs that hold a look.</p>
+      </div>
+
+      <div class="split__vision" id="split-vision">
+        <p class="split__vision-headline" id="split-vision-headline">I make photographs that hold a look — stories filed across a year of assignments.</p>
+        <div class="split__vision-meta">
+          <span class="split__vision-location" id="split-vision-location">Munich · India · Worldwide</span>
+          <span class="split__vision-date" id="split-vision-date">SS · 26</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Featured editorial — portrait ratio layout -->
+    <div class="split__right" id="split-right">
+
+      <!-- Meta above image -->
+      <div class="split__feat-meta" id="split-feat-meta">
+        <span>Featured&thinsp;·&thinsp;№&thinsp;07</span>
+        <span>Fashion Editorial</span>
+        <span>17 Frames</span>
+      </div>
+
+      <!-- Portrait-ratio image -->
+      <div class="split__feat-img-wrap" id="split-feat-img-wrap">
+        <img class="split__feat-img" id="split-feat-img"
+             src="shoots/fashion/bazaar/Hero_meghana_indo_western.jpg" alt="Featured editorial"
+             style="object-position:55% 18%;">
+      </div>
+
+      <!-- Title + button below image -->
+      <div class="split__feat-info">
+        <div>
+          <h2 class="split__feat-title" id="split-feat-title">Indo-Western Blend.</h2>
+          <p class="split__feat-sub" id="split-feat-sub">Meghana, Sonakshi &amp; Shruti · SS26</p>
+        </div>
+        <button class="split__open-btn" id="split-open-btn" aria-label="Open editorial gallery">
+          Open Editorial →
+        </button>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM STRIP: 4 featured items (one per category) -->
+    <div class="split__strip" id="split-strip" role="tablist">
+      <button class="split__strip-item is-active" data-strip="0" role="tab" aria-selected="true">
+        <span class="strip__num">01</span>
+        <span class="strip__title">Indo-Western Blend.</span>
+        <span class="strip__cat">Fashion</span>
+      </button>
+      <button class="split__strip-item" data-strip="1" role="tab" aria-selected="false">
+        <span class="strip__num">02</span>
+        <span class="strip__title">Pelli Roju.</span>
+        <span class="strip__cat">Weddings</span>
+      </button>
+      <button class="split__strip-item" data-strip="2" role="tab" aria-selected="false">
+        <span class="strip__num">03</span>
+        <span class="strip__title">Studio.</span>
+        <span class="strip__cat">Portraits</span>
+      </button>
+      <button class="split__strip-item" data-strip="3" role="tab" aria-selected="false">
+        <span class="strip__num">04</span>
+        <span class="strip__title">Wiesn.</span>
+        <span class="strip__cat">Events</span>
+      </button>
+    </div>
+
+  </section>
+
+
+  <!-- ═══════════════════════════════
+       GALLERY PANEL (full-screen slide-in)
+  ═══════════════════════════════ -->
+  <div class="gallery-panel" id="gallery-panel" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Editorial gallery">
+    <div class="gallery-panel__header">
+      <button class="gallery-panel__back" id="gallery-back" aria-label="Go back">← Back</button>
+      <div class="gallery-panel__title-wrap">
+        <span class="gallery-panel__title" id="gallery-title"></span>
+        <span class="gallery-panel__count" id="gallery-count"></span>
+      </div>
+      <button class="gallery-panel__close" id="gallery-close" aria-label="Close gallery">×</button>
+    </div>
+    <div class="gallery-panel__body" id="gallery-body"></div>
+  </div>
+
+
+  <!-- ═══════════════════════════════
+       LIGHTBOX
+  ═══════════════════════════════ -->
+  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button class="lb__close" id="lb-close" aria-label="Close">×</button>
+    <button class="lb__btn lb__prev" id="lb-prev" aria-label="Previous image">‹</button>
+    <img class="lb__img" id="lb-img" alt="">
+    <button class="lb__btn lb__next" id="lb-next" aria-label="Next image">›</button>
+    <span class="lb__counter" id="lb-counter"></span>
+  </div>
+
+
+  <!-- ═══════════════════════════════
+       FOOTER
+  ═══════════════════════════════ -->
+  <footer class="site-footer">
+    <span>© 2019&thinsp;—&thinsp;2026 VRASA</span>
+    <a href="contact.html" class="site-footer__contact">Contact for inquiry →</a>
+    <a href="archive.html">Work</a>
+  </footer>
+
+  <!-- TICKER -->
+  <div class="site-ticker ticker" aria-label="Latest editorials">
+    <div class="ticker__track">
+      <span>NOW BOOKING AW26</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>VRASA BY SRI VRUSHANK</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>FASHION &amp; EDITORIAL</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>WEDDINGS</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>PORTRAITS</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>CONCERTS</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>BASED IN MUNICH · AVAILABLE WORLDWIDE</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>NOW BOOKING AW26</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>VRASA BY SRI VRUSHANK</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>FASHION &amp; EDITORIAL</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>WEDDINGS</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>PORTRAITS</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>CONCERTS</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+      <span>BASED IN MUNICH · AVAILABLE WORLDWIDE</span><span class="ticker__dot">&thinsp;·&thinsp;</span>
+    </div>
+  </div>
+
+
+  <script src="assets/js/vrasa.js"></script>
+  <script>
+  /* ═══════════════════════════════════════════════════
+     SITE DATA
+  ═══════════════════════════════════════════════════ */
+  const CATS = {
+    fashion: {
+      label: 'Fashion',
+      tagline: 'I make photographs that hold a look.',
+      projects: [
+        { num:'01', title:'Indo-Western Blend.', cat:'Fashion',
+          sub:'Meghana, Sonakshi & Shruti · SS26', frames:17,
+          cover:'shoots/fashion/bazaar/Hero_meghana_indo_western.jpg',
+          subfolders: [
+            { title:'Meghana', frames:5,
+              cover:'shoots/fashion/bazaar/Hero_meghana_indo_western.jpg',
+              images:['Hero_meghana_indo_western.jpg','01_DSC00299.jpg','02_DSC01686-Edit.jpg','03_DSC01715-Edit.jpg','04_DSC01819.jpg'].map(f=>'shoots/fashion/bazaar/'+f) },
+            { title:'Sonakshi', frames:6,
+              cover:'shoots/fashion/chiaroscuro/01_1-DSC00371.jpg',
+              images:['01_1-DSC00371.jpg','02_2-DSC00523.jpg','03_3-DSC01097.jpg','04_4-DSC01218.jpg','05_5-DSC01222.jpg','06_6-DSC01233.jpg'].map(f=>'shoots/fashion/chiaroscuro/'+f) },
+            { title:'Shruti', frames:6,
+              cover:'shoots/fashion/roots/01_1-DSC00055.jpg',
+              images:['01_1-DSC00055.jpg','02_2-DSC00291.jpg','03_3-DSC00388.jpg','04_4-DSC01247.jpg','05_5-DSC01296.jpg','06_6-DSC01524.jpg'].map(f=>'shoots/fashion/roots/'+f) }
+          ]
+        },
+        { num:'02', title:'Amsterdam.', cat:'Fashion', sub:'20 frames · AW25', frames:20,
+          cover:'shoots/fashion/amsterdam/01_1-DSC00031.jpg',
+          images:['01_1-DSC00031.jpg','02_2-DSC00158.jpg','03_3-DSC00512.jpg','04_4-DSC01811.jpg','05_5-DSC01823.jpg','06_6-DSC01867.jpg','07_7-DSC01869.jpg','08_8-DSC01921.jpg','09_9-DSC01924.jpg','10_10-DSC01938.jpg','11_11-DSC02100.jpg','12_12-DSC02104.jpg','13_13-DSC02466.jpg','14_14-DSC02473.jpg','15_15-DSC02571.jpg','16_16-DSC02602.jpg','17_17-DSC02879.jpg','18_18-DSC02893.jpg','19_19-DSC03162.jpg','20_20-DSC03166.jpg'].map(f=>'shoots/fashion/amsterdam/'+f) },
+        { num:'03', title:'Court.', cat:'Fashion', sub:'10 frames · Courtside · SS25', frames:10,
+          cover:'shoots/fashion/court/01_1-DSC03791.jpg',
+          images:['01_1-DSC03791.jpg','02_2-DSC03795.jpg','03_3-DSC04060.jpg','04_4-DSC04099.jpg','05_5-DSC04378.jpg','06_6-DSC04425.jpg','07_7-DSC04432.jpg','08_8-DSC04491.jpg','09_9-DSC04549.jpg','10_10-DSC04601.jpg'].map(f=>'shoots/fashion/court/'+f) },
+        { num:'04', title:'Runway.', cat:'Fashion', sub:'2 frames · Milan Fashion Week', frames:2,
+          cover:'shoots/fashion/runway/01_1-DSC04885.jpg',
+          images:['01_1-DSC04885.jpg','02_2-DSC05005.jpg'].map(f=>'shoots/fashion/runway/'+f) }
+      ]
+    },
+    weddings: {
+      label: 'Weddings',
+      tagline: 'The day, unfolding.',
+      projects: [
+        { num:'01', title:'Pelli Roju.', cat:'Weddings',
+          sub:'31 frames · Telugu Wedding · Visakhapatnam', frames:31,
+          cover:'shoots/weddings/pelli-roju/01_1-DSC00075.jpg',
+          images:['01_1-DSC00075.jpg','02_1-DSC00605.jpg','03_1-DSC02560.jpg','04_1-DSC04669.jpg','05_2-096A9595.jpg','06_2-DSC00147.jpg','07_2-DSC00643.jpg','08_2-DSC02564.jpg','09_3-DSC00152.jpg','10_3-DSC00248.jpg','11_3-DSC00945.jpg','12_3-DSC02565.jpg','13_4-DSC00297.jpg','14_4-DSC00458.jpg','15_4-DSC00948.jpg','16_4-DSC02566.jpg','17_5-DSC00571.jpg','18_5-DSC00741.jpg','19_5-DSC02568.jpg','20_6-096A8646.jpg','21_6-DSC00593.jpg','22_6-DSC00772.jpg','23_7-DSC00712.jpg','24_7-DSC00812.jpg','25_8-DSC00715.jpg','26_8-DSC00850.jpg','27_9-DSC00763.jpg','28_9-DSC01099.jpg','29_10-DSC00787.jpg','30_11-DSC00847.jpg','31_14-DSC07369.jpg'].map(f=>'shoots/weddings/pelli-roju/'+f) }
+      ]
+    },
+    portraits: {
+      label: 'Portraits',
+      tagline: 'Every. Muse. Is a story.',
+      projects: [
+        { num:'01', title:'Studio.', cat:'Portraits', sub:'20 frames · Clean light, precise lines', frames:20,
+          cover:'shoots/portraits/studio/18_DSC00303.jpg',
+          images:['01_DSC00006.jpg','02_DSC00021.jpg','03_DSC00105.jpg','04_DSC00148-3.jpg','05_DSC00151.jpg','06_DSC00158.jpg','07_DSC00159-2.jpg','08_DSC00197.jpg','09_DSC00210.jpg','10_DSC00218.jpg','11_DSC00228.jpg','12_DSC00240-Edit.jpg','13_DSC00274.jpg','14_DSC00286.jpg','15_DSC00294.jpg','16_DSC00297.jpg','17_DSC00302.jpg','18_DSC00303.jpg','19_DSC00310.jpg','20_DSC08656_14.35.26.jpg'].map(f=>'shoots/portraits/studio/'+f) },
+        { num:'02', title:'Candid & Street.', cat:'Portraits', sub:'26 frames · On-location portraits', frames:26,
+          cover:'shoots/portraits/street/01_DSC00006.jpg',
+          images:['01_DSC00006.jpg','02_DSC00021.jpg','03_DSC00037.jpg','04_DSC00060.jpg','05_DSC00078.jpg','06_DSC00084.jpg','07_DSC00105.jpg','08_DSC00119.jpg','09_DSC00127.jpg','10_DSC00158.jpg','11_DSC00189.jpg','12_DSC00198.jpg','13_DSC00218.jpg','14_DSC00228.jpg','15_DSC00274.jpg','16_DSC00286.jpg','17_DSC00294.jpg','18_DSC00297.jpg','19_DSC00299.jpg','20_DSC00302.jpg','21_DSC00303.jpg','22_DSC00310.jpg','23_DSC01686-Edit.jpg','24_DSC01715-Edit.jpg','25_DSC01819.jpg','26_DSC08656_14.35.26.jpg'].map(f=>'shoots/portraits/street/'+f) }
+      ]
+    },
+    events: {
+      label: 'Events',
+      tagline: 'Place, weather, people.',
+      projects: [
+        { num:'01', title:'Wiesn.', cat:'Events', sub:'4 frames · Oktoberfest · Munich 2024', frames:4,
+          cover:'shoots/concerts/wiesn/01_1-A6500067.jpg',
+          images:['01_1-A6500067.jpg','02_2-A6500277.jpg','03_3-A6500298.jpg','04_4-A6500303.jpg'].map(f=>'shoots/concerts/wiesn/'+f) }
+      ]
+    }
+  };
+
+  // Bottom-strip featured items (one per category)
+  const STRIP = [
+    { catKey:'fashion',  pIdx:0 },
+    { catKey:'weddings', pIdx:0 },
+    { catKey:'portraits',pIdx:0 },
+    { catKey:'events',   pIdx:0 }
+  ];
+
+  /* ═══════════════════════════════════════════════════
+     STATE
+  ═══════════════════════════════════════════════════ */
+  let activeCoverCat = 'fashion';
+  let activeStripIdx = 0;
+  let galleryProject  = null;   // current project in gallery
+  let gallerySubfolder = null;  // current subfolder (null = top level)
+  let lbImages = [], lbIdx = 0;
+
+  /* ═══════════════════════════════════════════════════
+     COVER DOTS — hero image + headline + tags swap
+  ═══════════════════════════════════════════════════ */
+  const COVER_DATA = [
+    { cat:'fashion',  tag1:'Fashion · Editorial',         tag2:'Indo-Western · Vrasa',
+      headline:'Blending<br>Traditions,<br>in Style.',
+      vision:'Indo-western, couture studies and ateliers — stories filed across a year of assignments.',
+      location:'Munich · India · Worldwide', date:'SS · 26' },
+    { cat:'weddings', tag1:'Weddings · Documentary',      tag2:'Cinematic · Story-led',
+      headline:'The Day,<br>Unfolding.',
+      vision:'The day, unfolding — cinematic, story-led weddings. Filmed the way it felt.',
+      location:'Visakhapatnam · India', date:'02 / 25' },
+    { cat:'portraits',tag1:'Portraits · Studio',         tag2:'Muse · Conversation',
+      headline:'A Face,<br>A Story,<br>A Frame.',
+      vision:'A camera, a chair, and a long conversation. Every muse is a story told in light.',
+      location:'Munich · Studio', date:'04 / 26' },
+    { cat:'events',   tag1:'Events · Concerts · Travel',  tag2:'Place · Weather · People',
+      headline:'Place,<br>Weather,<br>People.',
+      vision:'Place, weather, people — the quiet electricity before the music starts.',
+      location:'Munich', date:'09 / 24' },
+  ];
+
+  function initCoverNav() {
+    const dots      = document.querySelectorAll('#cover-dots .cover__dot');
+    const headlineEl= document.getElementById('cover-headline');
+    const tag1El    = document.getElementById('cover-tag-line1');
+    const tag2El    = document.getElementById('cover-tag-line2');
+
+    function switchTo(idx) {
+      const d = COVER_DATA[idx];
+      activeCoverCat = d.cat;
+
+      // Swap hero image
+      document.querySelectorAll('.cover__bg').forEach(img =>
+        img.classList.toggle('is-active', parseInt(img.dataset.idx) === idx)
+      );
+
+      // Fade headline
+      headlineEl.classList.add('fading');
+      setTimeout(() => {
+        headlineEl.innerHTML = d.headline;
+        headlineEl.classList.remove('fading');
+      }, 360);
+
+      // Update tags
+      tag1El.textContent = d.tag1;
+      tag2El.textContent = d.tag2;
+
+      // Update dots
+      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === idx));
+    }
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => switchTo(i)));
+  }
+
+  /* ═══════════════════════════════════════════════════
+     SPLIT BOTTOM STRIP — change featured editorial
+  ═══════════════════════════════════════════════════ */
+  function initSplitStrip() {
+    const stripBtns = document.querySelectorAll('#split-strip .split__strip-item');
+    const featImg   = document.getElementById('split-feat-img');
+    const featMeta  = document.getElementById('split-feat-meta');
+    const featTitle = document.getElementById('split-feat-title');
+    const featSub   = document.getElementById('split-feat-sub');
+    const openBtn   = document.getElementById('split-open-btn');
+
+    const catTaglineWrap  = document.getElementById('split-cat-tagline');
+    const catLabelEl      = document.getElementById('split-cat-label');
+    const catQuoteEl      = document.getElementById('split-cat-quote');
+
+    function updateFeatured(idx) {
+      const s    = STRIP[idx];
+      const cat  = CATS[s.catKey];
+      const proj = cat.projects[s.pIdx];
+      activeStripIdx = idx;
+
+      // Crossfade featured image
+      featImg.classList.add('fade-out');
+      setTimeout(() => {
+        featImg.src = proj.cover;
+        featImg.alt = proj.title;
+        featImg.classList.remove('fade-out');
+      }, 500);
+
+      // Meta is now 3 separate spans — update each child
+      const metaSpans = featMeta.querySelectorAll('span');
+      if (metaSpans.length >= 3) {
+        metaSpans[0].textContent = `Featured · № 07`;
+        metaSpans[1].textContent = `${proj.cat} Editorial`;
+        metaSpans[2].textContent = `${proj.frames} Frames`;
+      }
+      featTitle.textContent = proj.title;
+      featSub.textContent   = proj.sub;
+
+      // Fade-swap left column category tagline
+      catTaglineWrap.classList.add('fading');
+      setTimeout(() => {
+        catLabelEl.textContent = cat.label;
+        catQuoteEl.textContent = cat.tagline;
+        catTaglineWrap.classList.remove('fading');
+      }, 280);
+
+      stripBtns.forEach(b => {
+        const active = parseInt(b.dataset.strip) === idx;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-selected', active);
+      });
+    }
+
+    stripBtns.forEach(btn => {
+      btn.addEventListener('click', () => updateFeatured(parseInt(btn.dataset.strip)));
+    });
+
+    openBtn.addEventListener('click', () => {
+      const s = STRIP[activeStripIdx];
+      openGallery(s.catKey, s.pIdx);
+    });
+
+    // Clicking the hero image also opens the gallery
+    const featImgWrap = document.getElementById('split-feat-img-wrap');
+    if (featImgWrap) {
+      featImgWrap.addEventListener('click', () => {
+        const s = STRIP[activeStripIdx];
+        openGallery(s.catKey, s.pIdx);
+      });
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     GALLERY PANEL
+  ═══════════════════════════════════════════════════ */
+  const galleryPanel = document.getElementById('gallery-panel');
+  const galleryBody  = document.getElementById('gallery-body');
+  const galleryTitle = document.getElementById('gallery-title');
+  const galleryCount = document.getElementById('gallery-count');
+  const galleryBack  = document.getElementById('gallery-back');
+  const galleryClose = document.getElementById('gallery-close');
+
+  function openGallery(catKey, pIdx) {
+    galleryProject = CATS[catKey].projects[pIdx];
+    gallerySubfolder = null;
+    galleryPanel.classList.add('is-open');
+    galleryPanel.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    if (galleryProject.subfolders) {
+      renderSubfolderCards();
+    } else {
+      renderImageGrid(galleryProject.images, galleryProject.title, galleryProject.frames);
+    }
+  }
+
+  function renderSubfolderCards() {
+    galleryTitle.textContent = galleryProject.title;
+    galleryCount.textContent = `${galleryProject.frames} FRAMES · ${galleryProject.subfolders.length} SERIES`;
+    galleryBack.textContent = '← Close';
+    galleryBack.onclick = closeGallery;
+
+    const grid = document.createElement('div');
+    grid.className = 'subfolder-grid';
+
+    galleryProject.subfolders.forEach(sf => {
+      const card = document.createElement('div');
+      card.className = 'subfolder-card';
+      card.innerHTML = `
+        <img src="${sf.cover}" alt="${sf.title}" loading="lazy">
+        <div class="subfolder-card__overlay" aria-hidden="true"></div>
+        <div class="subfolder-card__info">
+          <p class="subfolder-card__title">${sf.title}.</p>
+          <p class="subfolder-card__sub">${sf.frames} frames</p>
+        </div>`;
+      card.addEventListener('click', () => openSubfolder(sf));
+      grid.appendChild(card);
+    });
+
+    galleryBody.innerHTML = '';
+    galleryBody.appendChild(grid);
+  }
+
+  function openSubfolder(sf) {
+    gallerySubfolder = sf;
+    renderImageGrid(sf.images, sf.title, sf.frames, true);
+  }
+
+  function renderImageGrid(images, title, frames, isSubfolder = false) {
+    galleryTitle.textContent = isSubfolder
+      ? `${galleryProject.title} — ${title}`
+      : title;
+    galleryCount.textContent = `${frames} FRAMES`;
+
+    if (isSubfolder && galleryProject.subfolders) {
+      galleryBack.textContent = '← Series';
+      galleryBack.onclick = () => {
+        gallerySubfolder = null;
+        renderSubfolderCards();
+      };
+    } else {
+      galleryBack.textContent = '← Close';
+      galleryBack.onclick = closeGallery;
+    }
+
+    const grid = document.createElement('div');
+    grid.className = 'img-grid';
+
+    images.forEach((src, i) => {
+      const item = document.createElement('div');
+      item.className = 'img-grid__item';
+      item.innerHTML = `
+        <img src="${src}" alt="Frame ${i+1} — ${title}" loading="lazy">
+        <span class="img-grid__item__num">${String(i+1).padStart(2,'0')}</span>`;
+      item.addEventListener('click', () => openLightbox(images, i));
+      grid.appendChild(item);
+    });
+
+    galleryBody.innerHTML = '';
+    galleryBody.appendChild(grid);
+    galleryBody.scrollTop = 0;
+  }
+
+  function closeGallery() {
+    galleryPanel.classList.remove('is-open');
+    galleryPanel.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    galleryProject = null;
+    gallerySubfolder = null;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     LIGHTBOX
+  ═══════════════════════════════════════════════════ */
+  const lb      = document.getElementById('lb');
+  const lbImg   = document.getElementById('lb-img');
+  const lbCtr   = document.getElementById('lb-counter');
+
+  function openLightbox(imgs, idx) {
+    lbImages = imgs;
+    lbIdx    = idx;
+    renderLb();
+    lb.classList.add('is-open');
+  }
+  function closeLightbox() { lb.classList.remove('is-open'); }
+  function renderLb() {
+    lbImg.src = lbImages[lbIdx];
+    lbCtr.textContent = `${lbIdx+1} / ${lbImages.length}`;
+  }
+
+  document.getElementById('lb-close').addEventListener('click', closeLightbox);
+  document.getElementById('lb-prev').addEventListener('click', () => {
+    lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length; renderLb();
+  });
+  document.getElementById('lb-next').addEventListener('click', () => {
+    lbIdx = (lbIdx + 1) % lbImages.length; renderLb();
+  });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('is-open')) return;
+    if (e.key === 'Escape')     closeLightbox();
+    if (e.key === 'ArrowLeft')  { lbIdx=(lbIdx-1+lbImages.length)%lbImages.length; renderLb(); }
+    if (e.key === 'ArrowRight') { lbIdx=(lbIdx+1)%lbImages.length; renderLb(); }
+  });
+  lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+
+  /* Gallery close */
+  galleryClose.addEventListener('click', closeGallery);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && galleryPanel.classList.contains('is-open') && !lb.classList.contains('is-open'))
+      closeGallery();
+  });
+
+  /* ═══════════════════════════════════════════════════
+     INIT
+  ═══════════════════════════════════════════════════ */
+  initCoverNav();
+  initSplitStrip();
+  </script>
+
+<script>
+/* ── Site nav: scroll-state ── */
+!function(){
+  var n=document.getElementById('site-nav'); if(!n) return;
+  function u(){ n.classList.toggle('is-scrolled',window.scrollY>50); }
+  window.addEventListener('scroll',u,{passive:true}); u();
+}();
+/* ── Page transitions ── */
+!function(){
+  var v=document.getElementById('page-veil'); if(!v) return;
+  // Arrive: flash opaque then fade out
+  v.style.opacity='1'; v.style.transition='none';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      v.style.transition='opacity .52s cubic-bezier(.4,0,.2,1)';
+      v.style.opacity='0';
+    });
+  });
+  // Depart: fade in then navigate
+  document.querySelectorAll('a[href]').forEach(function(a){
+    var h=a.getAttribute('href');
+    if(!h||/^(#|https?:|mailto:|tel:|javascript)/.test(h)) return;
+    a.addEventListener('click',function(e){
+      if(e.metaKey||e.ctrlKey||e.shiftKey) return;
+      e.preventDefault();
+      v.style.transition='opacity .38s cubic-bezier(.4,0,.2,1)';
+      v.style.opacity='1';
+      v.style.pointerEvents='all';
+      setTimeout(function(){ window.location.href=h; },400);
+    });
+  });
+}();
+</script>
+</body>
+</html>

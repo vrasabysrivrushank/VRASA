@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archive — VRASA by Sri Vrushank</title>
+  <meta name="description" content="Complete archive of all shoots — fashion, weddings, portraits and events by Sri Vrushank." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&family=Space+Mono:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/vrasa.css">
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #0A0A0A;
+    --black: #f4f1ea;
+    --muted: rgba(244,241,234,.38);
+    --border: rgba(244,241,234,.1);
+    --mono: 'Space Mono', monospace;
+    --serif: 'Cormorant Garamond', serif;
+    --sc: 'Cormorant SC', serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: #0A0A0A; color: #f4f1ea; font-family: var(--mono); overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    height: 56px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 40px;
+    background: rgba(10,10,10,.97);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .nav__logo svg { height: 26px; width: auto; color: #f4f1ea; display: block; }
+  .nav__links {
+    display: flex; gap: 36px;
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .nav__links a { transition: color .2s; }
+  .nav__links a:hover,
+  .nav__links a.is-active { color: var(--black); }
+  .nav__links a.is-active { border-bottom: 1px solid rgba(244,241,234,.4); padding-bottom: 2px; }
+
+  /* ── PAGE HEADER ── */
+  .arch-header {
+    margin-top: 56px;
+    padding: 56px 40px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .arch-header__eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 14px;
+  }
+  .arch-header__title {
+    font-family: var(--sc); font-weight: 300;
+    font-size: clamp(38px, 5vw, 66px); letter-spacing: .06em; line-height: 1;
+    color: var(--black);
+  }
+  .arch-header__count {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    display: flex; gap: 0;
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-btn {
+    background: none; border: none; cursor: pointer;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase;
+    color: var(--muted);
+    padding: 16px 22px;
+    border-right: 1px solid var(--border);
+    transition: color .2s, background .2s;
+  }
+  .filter-btn:first-child { border-left: 1px solid var(--border); }
+  .filter-btn:hover { color: var(--black); background: rgba(10,10,10,.03); }
+  .filter-btn.is-active { color: var(--black); border-bottom: 2px solid var(--black); margin-bottom: -1px; }
+
+  /* ── CATALOG GRID ── */
+  .catalog {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .catalog-item {
+    background: #0A0A0A;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background .2s;
+  }
+  .catalog-item:hover { background: #1a1a1a; }
+
+  .catalog-item__thumb {
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: rgba(244,241,234,.06);
+  }
+  .catalog-item__thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center 20%;
+    transition: transform .5s cubic-bezier(.25,.46,.45,.94);
+    display: block;
+  }
+  .catalog-item:hover .catalog-item__thumb img { transform: scale(1.04); }
+
+  .catalog-item__info {
+    padding: 14px 16px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .catalog-item__cat {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .28em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .catalog-item__title {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(17px, 1.6vw, 22px); line-height: 1.2;
+    color: var(--black); margin-bottom: 8px;
+  }
+  .catalog-item__meta {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .catalog-item__arrow {
+    opacity: 0; transition: opacity .2s;
+    font-size: 13px;
+  }
+  .catalog-item:hover .catalog-item__arrow { opacity: 1; }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(10,10,10,.95);
+    display: flex; flex-direction: column;
+    transform: translateY(100%);
+    transition: transform .5s cubic-bezier(.77,0,.175,1);
+  }
+  .lightbox.is-open { transform: translateY(0); }
+
+  .lb-header {
+    flex-shrink: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 32px; height: 56px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .lb-header__info {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+  }
+  .lb-close {
+    background: none; border: none; cursor: pointer;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: rgba(255,255,255,.5); padding: 8px 0;
+    transition: color .2s;
+  }
+  .lb-close:hover { color: #fff; }
+
+  .lb-grid {
+    flex: 1; min-height: 0;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px; padding: 3px;
+    align-content: start;
+  }
+  .lb-grid img {
+    width: 100%; height: auto; display: block;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .lb-grid img:hover { opacity: .85; }
+
+  /* Fullscreen single image */
+  .lb-single {
+    position: fixed; inset: 0; z-index: 300;
+    background: #000;
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .lb-single.is-open { display: flex; }
+  .lb-single img {
+    max-width: 100%; max-height: 100%;
+    object-fit: contain; display: block;
+  }
+  .lb-single__close {
+    position: absolute; top: 20px; right: 28px;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .22em;
+    color: rgba(255,255,255,.5); text-transform: uppercase;
+    transition: color .2s;
+  }
+  .lb-single__close:hover { color: #fff; }
+  .lb-single__nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    font-family: var(--mono); font-size: 18px;
+    color: rgba(255,255,255,.4); padding: 16px;
+    transition: color .2s;
+  }
+  .lb-single__nav:hover { color: #fff; }
+  .lb-single__prev { left: 12px; }
+  .lb-single__next { right: 12px; }
+  .lb-single__counter {
+    position: absolute; bottom: 20px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .22em;
+    color: rgba(255,255,255,.35); text-transform: uppercase;
+  }
+
+  /* ── FOOTER ── */
+  .page-footer { background: #0A0A0A;
+    padding: 22px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .page-footer a:hover { color: var(--black); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) { .catalog { grid-template-columns: repeat(4,1fr); padding: 24px; } }
+  @media (max-width: 800px)  {
+    .catalog { grid-template-columns: repeat(2,1fr); padding: 16px; gap: 12px; background: none; }
+    .catalog-item { border: 1px solid var(--border); }
+    .nav { padding: 0 24px; }
+    .nav__links { gap: 20px; font-size: 10.5px; }
+    .arch-header { padding: 40px 24px 28px; }
+    .filter-bar { padding: 0 24px; overflow-x: auto; }
+    .page-footer { background: #0A0A0A; padding: 18px 24px; flex-wrap: wrap; gap: 12px; }
+  }
+  @media (max-width: 540px)  { .catalog { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav__logo" aria-label="VRASA — Home">
+    <svg viewBox="0 0 520 120" xmlns="http://www.w3.org/2000/svg">
+      <text x="260" y="80" text-anchor="middle" font-family="'Cormorant SC','Cormorant',serif"
+            font-weight="400" font-size="96" letter-spacing="14" fill="currentColor">VRASA</text>
+      <g transform="translate(260,98)" stroke-linecap="round" fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M -92 0 C -70 0,-66 -8,-54 -8 S -40 0,-30 0"/>
+        <path d="M -30 0 C -24 0,-20 -4,-14 -4"/>
+        <path d="M 92 0 C 70 0,66 -8,54 -8 S 40 0,30 0"/>
+        <path d="M 30 0 C 24 0,20 -4,14 -4"/>
+      </g>
+      <polygon points="260,93 264,98 260,103 256,98" fill="currentColor"/>
+    </svg>
+  </a>
+  <div class="nav__links">
+    <a href="index.html">Home</a>
+    <a href="archive.html">Portfolio</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<header class="arch-header">
+  <div>
+    <p class="arch-header__eyebrow">VRASA · Complete Archive · Est. 2019</p>
+    <h1 class="arch-header__title">All Shoots</h1>
+  </div>
+  <p class="arch-header__count" id="shoot-count">10 shoots · All categories</p>
+</header>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn is-active" data-cat="all">All</button>
+  <button class="filter-btn" data-cat="fashion">Fashion</button>
+  <button class="filter-btn" data-cat="weddings">Weddings</button>
+  <button class="filter-btn" data-cat="portraits">Portraits</button>
+  <button class="filter-btn" data-cat="events">Events</button>
+</div>
+
+<!-- CATALOG -->
+<main class="catalog" id="catalog" role="main"></main>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" aria-modal="true" role="dialog" aria-label="Shoot gallery">
+  <div class="lb-header">
+    <span class="lb-header__info" id="lb-title">Shoot Name</span>
+    <button class="lb-close" id="lb-close" aria-label="Close">✕ Close</button>
+  </div>
+  <div class="lb-grid" id="lb-grid"></div>
+</div>
+
+<!-- SINGLE IMAGE VIEWER -->
+<div class="lb-single" id="lb-single" aria-modal="true">
+  <button class="lb-single__close" id="ls-close">✕ Esc</button>
+  <button class="lb-single__nav lb-single__prev" id="ls-prev">←</button>
+  <img id="ls-img" src="" alt="">
+  <button class="lb-single__nav lb-single__next" id="ls-next">→</button>
+  <span class="lb-single__counter" id="ls-counter"></span>
+</div>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <span>© 2019–2026 VRASA</span>
+  <a href="archive.html">↗ View Portfolio</a>
+  <a href="contact.html">Enquire →</a>
+</footer>
+
+<script>
+const SHOOTS = [
+  {
+    id: 'roots',
+    title: 'Indo-Western Blend',
+    cat: 'fashion',
+    catLabel: 'Fashion · Editorial',
+    location: 'Munich',
+    year: '2024',
+    cover: 'shoots/fashion/roots/01_1-DSC00055.jpg',
+    folder: 'shoots/fashion/roots',
+    images: [
+      '01_1-DSC00055.jpg','02_2-DSC00291.jpg','03_3-DSC00196.jpg',
+      '04_4-DSC00209.jpg','05_5-DSC00178.jpg','06_6-DSC00292.jpg',
+      '07_7-DSC00311.jpg','08_8-DSC00229.jpg','09_9-DSC00067.jpg',
+    ]
+  },
+  {
+    id: 'amsterdam',
+    title: 'Amsterdam',
+    cat: 'fashion',
+    catLabel: 'Fashion · Editorial',
+    location: 'Amsterdam',
+    year: '2024',
+    cover: 'shoots/fashion/amsterdam/01_1-DSC00031.jpg',
+    folder: 'shoots/fashion/amsterdam',
+    images: [
+      '01_1-DSC00031.jpg','02_2-DSC00158.jpg','03_3-DSC00091.jpg',
+      '04_4-DSC00178.jpg','05_5-DSC00052.jpg','06_6-DSC00116.jpg',
+    ]
+  },
+  {
+    id: 'court',
+    title: 'Court',
+    cat: 'fashion',
+    catLabel: 'Fashion · Editorial',
+    location: 'Munich',
+    year: '2024',
+    cover: 'shoots/fashion/court/01_1-DSC03791.jpg',
+    folder: 'shoots/fashion/court',
+    images: [
+      '01_1-DSC03791.jpg','02_2-DSC03795.jpg','03_3-DSC03822.jpg',
+      '04_4-DSC03869.jpg','05_5-DSC03899.jpg',
+    ]
+  },
+  {
+    id: 'runway',
+    title: 'Runway',
+    cat: 'fashion',
+    catLabel: 'Fashion · Editorial',
+    location: 'Munich',
+    year: '2025',
+    cover: 'shoots/fashion/runway/01_1-DSC04885.jpg',
+    folder: 'shoots/fashion/runway',
+    images: [
+      '01_1-DSC04885.jpg','02_2-DSC05005.jpg','03_3-DSC04930.jpg',
+      '04_4-DSC04952.jpg','05_5-DSC04975.jpg',
+    ]
+  },
+  {
+    id: 'bazaar',
+    title: 'Bazaar',
+    cat: 'fashion',
+    catLabel: 'Fashion · Editorial',
+    location: 'Munich',
+    year: '2024',
+    cover: 'shoots/fashion/bazaar/01_DSC00299.jpg',
+    folder: 'shoots/fashion/bazaar',
+    images: [
+      '01_DSC00299.jpg','02_DSC01686-Edit.jpg','03_DSC00317.jpg',
+      '04_DSC00344.jpg',
+    ]
+  },
+  {
+    id: 'chiaroscuro',
+    title: 'Chiaroscuro',
+    cat: 'fashion',
+    catLabel: 'Fashion · Portrait',
+    location: 'Munich',
+    year: '2023',
+    cover: 'shoots/fashion/chiaroscuro/01_1-DSC00371.jpg',
+    folder: 'shoots/fashion/chiaroscuro',
+    images: [
+      '01_1-DSC00371.jpg','02_2-DSC00523.jpg','03_3-DSC00417.jpg',
+      '04_4-DSC00459.jpg','05_5-DSC00499.jpg',
+    ]
+  },
+  {
+    id: 'pelli-roju',
+    title: 'Pelli Roju',
+    cat: 'weddings',
+    catLabel: 'Weddings',
+    location: 'Munich',
+    year: '2024',
+    cover: 'shoots/weddings/pelli-roju/01_1-DSC00075.jpg',
+    folder: 'shoots/weddings/pelli-roju',
+    images: [
+      '01_1-DSC00075.jpg','02_1-DSC00605.jpg','03_1-DSC00284.jpg',
+      '04_1-DSC00392.jpg','05_1-DSC00452.jpg','06_1-DSC00520.jpg',
+    ]
+  },
+  {
+    id: 'studio',
+    title: 'Studio Portraits',
+    cat: 'portraits',
+    catLabel: 'Portraits · Studio',
+    location: 'Munich',
+    year: '2024',
+    cover: 'shoots/portraits/studio/01_DSC00006.jpg',
+    folder: 'shoots/portraits/studio',
+    images: [
+      '01_DSC00006.jpg','02_DSC00021.jpg','03_DSC00036.jpg',
+      '04_DSC00051.jpg','05_DSC00062.jpg',
+    ]
+  },
+  {
+    id: 'street',
+    title: 'Candid & Street',
+    cat: 'portraits',
+    catLabel: 'Portraits · Candid',
+    location: 'Munich · India',
+    year: '2024',
+    cover: 'shoots/portraits/street/01_DSC00006.jpg',
+    folder: 'shoots/portraits/street',
+    images: [
+      '01_DSC00006.jpg','02_DSC00021.jpg','03_DSC00036.jpg',
+    ]
+  },
+  {
+    id: 'wiesn',
+    title: 'Wiesn',
+    cat: 'events',
+    catLabel: 'Events',
+    location: 'Munich',
+    year: '2024',
+    cover: 'shoots/concerts/wiesn/01_1-A6500067.jpg',
+    folder: 'shoots/concerts/wiesn',
+    images: [
+      '01_1-A6500067.jpg','02_2-A6500277.jpg','03_3-A6500123.jpg',
+      '04_4-A6500198.jpg','05_5-A6500312.jpg',
+    ]
+  },
+];
+
+let activeCat = 'all';
+let lbImages = [];
+let lbIdx = 0;
+
+function render() {
+  const filtered = activeCat === 'all' ? SHOOTS : SHOOTS.filter(s => s.cat === activeCat);
+  document.getElementById('shoot-count').textContent =
+    filtered.length + ' shoot' + (filtered.length !== 1 ? 's' : '') + ' · ' +
+    (activeCat === 'all' ? 'All categories' : filtered[0]?.catLabel || activeCat);
+
+  const catalog = document.getElementById('catalog');
+  catalog.innerHTML = filtered.map((s, i) => `
+    <div class="catalog-item" data-id="${s.id}" role="button" tabindex="0" aria-label="Open ${s.title}">
+      <div class="catalog-item__thumb">
+        <img src="${s.cover}" alt="${s.title}" loading="${i < 10 ? 'eager' : 'lazy'}">
+      </div>
+      <div class="catalog-item__info">
+        <p class="catalog-item__cat">${s.catLabel}</p>
+        <p class="catalog-item__title">${s.title}</p>
+        <div class="catalog-item__meta">
+          <span>${s.location} · ${s.year}</span>
+          <span class="catalog-item__arrow">→</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  catalog.querySelectorAll('.catalog-item').forEach(el => {
+    el.addEventListener('click', () => openShoot(el.dataset.id));
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') openShoot(el.dataset.id); });
+  });
+}
+
+function openShoot(id) {
+  const shoot = SHOOTS.find(s => s.id === id);
+  if (!shoot) return;
+  lbImages = shoot.images.map(f => shoot.folder + '/' + f);
+
+  document.getElementById('lb-title').textContent =
+    shoot.catLabel + ' · ' + shoot.title + ' · ' + shoot.location + ' ' + shoot.year;
+
+  const grid = document.getElementById('lb-grid');
+  grid.innerHTML = lbImages.map((src, i) =>
+    `<img src="${src}" alt="${shoot.title} ${i+1}" loading="${i < 9 ? 'eager' : 'lazy'}">`
+  ).join('');
+  grid.querySelectorAll('img').forEach((img, i) => {
+    img.addEventListener('click', () => openSingle(i));
+  });
+
+  document.getElementById('lightbox').classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+
+function openSingle(idx) {
+  lbIdx = idx;
+  showSingle();
+  document.getElementById('lb-single').classList.add('is-open');
+}
+
+function closeSingle() {
+  document.getElementById('lb-single').classList.remove('is-open');
+}
+
+function showSingle() {
+  document.getElementById('ls-img').src = lbImages[lbIdx];
+  document.getElementById('ls-counter').textContent = (lbIdx + 1) + ' / ' + lbImages.length;
+}
+
+document.getElementById('lb-close').addEventListener('click', closeLightbox);
+document.getElementById('ls-close').addEventListener('click', closeSingle);
+document.getElementById('ls-prev').addEventListener('click', () => {
+  lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length; showSingle();
+});
+document.getElementById('ls-next').addEventListener('click', () => {
+  lbIdx = (lbIdx + 1) % lbImages.length; showSingle();
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    activeCat = btn.dataset.cat;
+    render();
+  });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('lb-single').classList.contains('is-open')) { closeSingle(); return; }
+    if (document.getElementById('lightbox').classList.contains('is-open')) { closeLightbox(); return; }
+  }
+  if (document.getElementById('lb-single').classList.contains('is-open')) {
+    if (e.key === 'ArrowLeft')  { lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length; showSingle(); }
+    if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbImages.length; showSingle(); }
+  }
+});
+
+render();
+</script>
+</body>
+</html>

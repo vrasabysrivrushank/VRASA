@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fashion — VRASA by Sri Vrushank</title>
+  <meta name="description" content="Fashion editorials by Sri Vrushank — VRASA." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&family=Space+Mono:ital,wght@0,400;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/vrasa.css">
+  <style>
+    body { background: #0A0A0A; color: rgba(255,255,255,0.75); }
+
+    .g-nav {
+      background: #0A0A0A;
+      border-bottom-color: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.65);
+      opacity: 1; transform: none; pointer-events: auto;
+    }
+    .g-nav__brand { color: #fff; }
+    .g-nav__links .sep { background: rgba(255,255,255,0.2); }
+    .g-nav a.current { color: #fff; font-weight: 700; }
+
+    /* Category header */
+    .cat-header {
+      padding: 52px 32px 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .cat-header__label {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      margin-bottom: 8px;
+    }
+    .cat-header__title {
+      font-family: var(--sc);
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: #fff;
+      line-height: 1;
+    }
+    .cat-header__meta {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      text-align: right;
+    }
+
+    /* Editorial grid */
+    .cat-grid {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .editorial {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      aspect-ratio: 3/4;
+      background: #1c1c1c;
+    }
+    .editorial:first-child { grid-column: span 2; aspect-ratio: 16/9; }
+
+    .editorial img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.55s ease;
+    }
+    .editorial:hover img { transform: scale(1.04); }
+
+    .ph { width: 100%; height: 100%; }
+    .ph-a { background: linear-gradient(160deg, #2d2015 0%, #5a4030 50%, #1e150d 100%); }
+    .ph-b { background: linear-gradient(135deg, #1e2820 0%, #3a4c38 50%, #141c12 100%); }
+    .ph-c { background: linear-gradient(160deg, #20202e 0%, #383450 50%, #14141e 100%); }
+    .ph-d { background: linear-gradient(135deg, #2a2018 0%, #4a3828 50%, #1a1410 100%); }
+    .ph-e { background: linear-gradient(160deg, #181818 0%, #2c2c2c 50%, #101010 100%); }
+    .ph-f { background: linear-gradient(135deg, #141414 0%, #222 50%, #0c0c0c 100%); }
+    .ph-g { background: linear-gradient(160deg, #101020 0%, #201e38 50%, #0c0c18 100%); }
+
+    .editorial__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 55%);
+      pointer-events: none;
+    }
+    .editorial__cat {
+      position: absolute;
+      top: 12px; left: 14px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+      background: rgba(0,0,0,0.5);
+      padding: 3px 7px;
+    }
+    .editorial__num {
+      position: absolute;
+      top: 12px; right: 14px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.22);
+    }
+    .editorial__info {
+      position: absolute;
+      bottom: 16px; left: 16px; right: 16px;
+    }
+    .editorial__title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(27px, 2.5vw, 42px);
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .editorial__sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+    }
+
+    /* Footer */
+    .cat-footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      margin-top: 4px;
+    }
+    .cat-footer a { transition: color 0.2s; }
+    .cat-footer a:hover { color: rgba(255,255,255,0.65); }
+
+    @media (max-width: 800px) {
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .editorial:first-child { grid-column: span 2; }
+    }
+    @media (max-width: 500px) {
+      .cat-grid { grid-template-columns: 1fr; padding: 12px; }
+      .editorial:first-child { grid-column: span 1; aspect-ratio: 3/4; }
+    }
+
+    /* ── Back to portfolio ── */
+    .cat-back {
+      display: flex;
+      align-items: center;
+      padding: 14px 32px 0;
+      margin-top: calc(var(--nav-h, 64px) + 64px);
+    }
+    .cat-back__link {
+      font-family: var(--mono, 'Space Mono', monospace);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(244,241,234,.38);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: color .2s ease;
+    }
+    .cat-back__link:hover { color: rgba(244,241,234,.85); }
+    .cat-back__link svg { width:12px; height:12px; flex-shrink:0; }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="site-nav__logo" aria-label="VRASA — Home"><svg viewBox="0 0 520 148" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="height:40px;width:auto;color:inherit;display:block;"><text x="260" y="78" text-anchor="middle" font-family="'Playfair Display','Cormorant SC',serif" font-weight="900" font-size="88" letter-spacing="10" fill="currentColor">VRASA</text><g transform="translate(260,96)" stroke-linecap="round" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="-108" y1="0" x2="-22" y2="0"/><line x1="22" y1="0" x2="108" y2="0"/><path d="M -22 0 C -16 -6,-8 -6,-4 -3"/><path d="M 22 0 C 16 -6,8 -6,4 -3"/></g><circle cx="260" cy="96" r="2.2" fill="currentColor"/><text x="260" y="130" text-anchor="middle" font-family="'Cormorant Garamond','Cormorant',Georgia,serif" font-style="italic" font-weight="400" font-size="17" letter-spacing="3" fill="currentColor" opacity="0.72">by Sri Vrashank</text></svg></a>
+  <div class="site-nav__links">
+      <a href="index.html">Home</a>
+      <a href="archive.html" class="is-active">Portfolio</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+  </div>
+</nav>
+<div class="page-veil" id="page-veil" aria-hidden="true"></div>
+<div class="cat-back">
+  <a href="archive.html?cat=Fashion" class="cat-back__link">
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 2L3.5 6L7.5 10"/></svg> All Projects
+  </a>
+</div>
+
+<header class="cat-header">
+    <div>
+      <p class="cat-header__label">VRASA · Vol. 07</p>
+      <h1 class="cat-header__title">Fashion</h1>
+    </div>
+    <div class="cat-header__meta">
+      <p>7 Editorials</p>
+      <p>Est. 2019</p>
+    </div>
+  </header>
+
+  <main class="cat-grid" aria-label="Fashion editorials">
+
+    <article class="editorial">
+      <img src="shoots/fashion/chiaroscuro/01_1-DSC00371.jpg" alt="Chiaroscuro — fashion editorial">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">01 · Fashion</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">Chiaroscuro.</h2>
+        <p class="editorial__sub">6 frames &thinsp;·&thinsp; Indo-Western · SS26</p>
+      </div>
+    </article>
+
+    <article class="editorial">
+      <img src="shoots/fashion/bazaar/01_DSC00299.jpg" alt="Bazaar — fashion editorial">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">02 · Fashion</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">Bazaar.</h2>
+        <p class="editorial__sub">4 frames &thinsp;·&thinsp; Indo-Western · SS26</p>
+      </div>
+    </article>
+
+    <article class="editorial">
+      <img src="shoots/fashion/roots/01_1-DSC00055.jpg" alt="Roots — fashion editorial">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">03 · Fashion</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">Roots.</h2>
+        <p class="editorial__sub">6 frames &thinsp;·&thinsp; AW25</p>
+      </div>
+    </article>
+
+    <article class="editorial">
+      <img src="shoots/fashion/amsterdam/01_1-DSC00031.jpg" alt="Amsterdam — fashion editorial">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">04 · Fashion</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">Amsterdam.</h2>
+        <p class="editorial__sub">20 frames &thinsp;·&thinsp; AW25</p>
+      </div>
+    </article>
+
+    <article class="editorial">
+      <img src="shoots/fashion/court/01_1-DSC03791.jpg" alt="Court — fashion editorial">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">05 · Fashion</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">Court.</h2>
+        <p class="editorial__sub">10 frames &thinsp;·&thinsp; Courtside · SS25</p>
+      </div>
+    </article>
+
+    <article class="editorial">
+      <img src="shoots/fashion/runway/01_1-DSC04885.jpg" alt="Runway — MFW editorial">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">06 · Fashion</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">Runway.</h2>
+        <p class="editorial__sub">2 frames &thinsp;·&thinsp; Milan Fashion Week</p>
+      </div>
+    </article>
+
+    <article class="editorial">
+      <img src="shoots/fashion/roots/04_4-DSC01247.jpg" alt="Roots II — fashion editorial">
+      <div class="editorial__overlay" aria-hidden="true"></div>
+      <span class="editorial__cat">07 · Fashion</span>
+      <div class="editorial__info">
+        <h2 class="editorial__title">Roots, II.</h2>
+        <p class="editorial__sub">4 frames &thinsp;·&thinsp; AW25</p>
+      </div>
+    </article>
+
+  </main>
+
+  <footer class="cat-footer">
+    <span>© 2019&thinsp;—&thinsp;2026 VRASA</span>
+    <a href="archive.html">↓ Full Portfolio (214)</a>
+    <a href="mailto:srivrushank@gmail.com">srivrushank@gmail.com</a>
+  </footer>
+
+  <script src="assets/js/vrasa.js"></script>
+
+<script>
+/* ── Site nav: scroll-state ── */
+!function(){
+  var n=document.getElementById('site-nav'); if(!n) return;
+  function u(){ n.classList.toggle('is-scrolled',window.scrollY>50); }
+  window.addEventListener('scroll',u,{passive:true}); u();
+}();
+/* ── Page transitions ── */
+!function(){
+  var v=document.getElementById('page-veil'); if(!v) return;
+  // Arrive: flash opaque then fade out
+  v.style.opacity='1'; v.style.transition='none';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      v.style.transition='opacity .52s cubic-bezier(.4,0,.2,1)';
+      v.style.opacity='0';
+    });
+  });
+  // Depart: fade in then navigate
+  document.querySelectorAll('a[href]').forEach(function(a){
+    var h=a.getAttribute('href');
+    if(!h||/^(#|https?:|mailto:|tel:|javascript)/.test(h)) return;
+    a.addEventListener('click',function(e){
+      if(e.metaKey||e.ctrlKey||e.shiftKey) return;
+      e.preventDefault();
+      v.style.transition='opacity .38s cubic-bezier(.4,0,.2,1)';
+      v.style.opacity='1';
+      v.style.pointerEvents='all';
+      setTimeout(function(){ window.location.href=h; },400);
+    });
+  });
+}();
+</script>
+</body>
+</html>

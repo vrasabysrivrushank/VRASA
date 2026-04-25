@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — VRASA by Sri Vrushank</title>
+  <meta name="description" content="Sri Vrushank — fashion photographer and particle physicist. Munich, Germany." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&family=Space+Mono:ital,wght@0,400;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/vrasa.css">
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0A0A0A; --fg: #f4f1ea;
+    --red: #e84040;
+    --muted: rgba(244,241,234,.38);
+    --border: rgba(244,241,234,.1);
+    --mono: 'Space Mono', monospace;
+    --serif: 'Cormorant Garamond', serif;
+    --sc: 'Cormorant SC', serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--serif); overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ══ SECTION 0: PARTICLE HERO ══ */
+  .decay-hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #02020a;
+    display: flex;
+  }
+  /* Canvas occupies left ~58% */
+  .decay-hero__canvas-wrap {
+    position: relative;
+    flex: 0 0 58%;
+    height: 100%;
+    overflow: hidden;
+  }
+  #decay-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .decay-hero__eq-badge {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono); font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+    color: rgba(244,241,234,.28);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  /* Physics panel — right 42% */
+  .decay-hero__panel {
+    flex: 0 0 42%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 52px 60px 44px;
+    border-left: 1px solid rgba(244,241,234,.08);
+    background: rgba(2,2,10,.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    overflow-y: auto;
+  }
+  .decay-hero__scroll {
+    position: absolute;
+    bottom: 36px;
+    right: 52px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 9px; letter-spacing: .28em; text-transform: uppercase;
+    color: rgba(244,241,234,.22);
+  }
+  .decay-hero__scroll svg { animation: bounce 1.8s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
+
+  @media (max-width: 900px) {
+    .decay-hero { flex-direction: column; height: auto; min-height: 100vh; }
+    .decay-hero__canvas-wrap { flex: none; width: 100%; height: 56vw; min-height: 280px; }
+    .decay-hero__panel { flex: none; width: 100%; height: auto; border-left: none; border-top: 1px solid rgba(244,241,234,.08); padding: 48px 28px 52px; }
+    .decay-hero__scroll { display: none; }
+  }
+
+  /* ══ SECTION 1: PROFILE ══ */
+  .about-profile {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    min-height: 100vh;
+    padding-top: 74px;
+  }
+  .profile-photo {
+    position: sticky;
+    top: 74px;
+    height: calc(100vh - 74px);
+    overflow: hidden;
+    background: #0d0d0d;
+  }
+  .profile-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 50% 18%;
+    display: block;
+  }
+  .profile-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 72px 60px;
+    border-left: 1px solid var(--border);
+  }
+  .profile-eyebrow {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 32px; display: block;
+  }
+  .profile-name {
+    font-family: var(--sc); font-size: clamp(38px, 4.6vw, 64px);
+    font-weight: 400; letter-spacing: .04em; line-height: 1.05;
+    margin-bottom: 28px;
+  }
+  .profile-rule { width: 44px; height: 1px; background: rgba(244,241,234,.28); margin-bottom: 32px; }
+  .profile-facts {
+    display: flex; flex-direction: column; gap: 16px;
+    margin-bottom: 40px; padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .fact { display: flex; align-items: baseline; gap: 18px; }
+  .fact__label {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .24em; text-transform: uppercase;
+    color: var(--muted); width: 86px; flex-shrink: 0;
+  }
+  .fact__value { font-family: var(--serif); font-size: 16px; color: rgba(244,241,234,.75); }
+  .profile-bio {
+    font-family: var(--serif); font-size: 18px; line-height: 1.82;
+    color: rgba(244,241,234,.62);
+  }
+  .profile-bio em { font-style: italic; color: rgba(244,241,234,.8); }
+
+  /* ══ PHYSICS PANEL (inside hero right half) ══ */
+  .physics-eyebrow {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 16px; display: block;
+  }
+  .physics-title {
+    font-family: var(--sc); font-size: clamp(28px, 3.2vw, 48px);
+    font-weight: 400; letter-spacing: .06em;
+    margin-bottom: 16px;
+  }
+  .physics-sub {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted); line-height: 2; margin-bottom: 36px;
+  }
+  .physics-rule { width: 36px; height: 1px; background: rgba(244,241,234,.2); margin-bottom: 32px; }
+  .physics-bio {
+    font-family: var(--serif); font-size: 16px; line-height: 1.88;
+    color: rgba(244,241,234,.62);
+    margin-bottom: 40px;
+  }
+  .physics-bio em { font-style: italic; color: rgba(244,241,234,.8); }
+  .cv-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .24em; text-transform: uppercase;
+    color: rgba(244,241,234,.82);
+    padding: 13px 28px;
+    border: 1px solid rgba(244,241,234,.22);
+    border-radius: 2px; text-decoration: none;
+    transition: color .22s, border-color .22s, background .22s;
+    align-self: flex-start;
+  }
+  .cv-btn:hover { color: var(--fg); border-color: rgba(244,241,234,.5); background: rgba(244,241,234,.05); }
+  .cv-btn svg { width: 12px; height: 12px; opacity: .68; flex-shrink: 0; }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 22px 40px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .footer a:hover { color: var(--fg); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .about-profile { grid-template-columns: 1fr; }
+    .profile-photo { position: relative; top: 0; height: 72vw; }
+    .profile-text { padding: 48px 28px; border-left: none; border-top: 1px solid var(--border); }
+    .footer { padding: 18px 24px; font-size: 10px; flex-wrap: wrap; gap: 12px; }
+  }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="site-nav__logo" aria-label="VRASA — Home"><svg viewBox="0 0 520 148" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="height:40px;width:auto;color:inherit;display:block;"><text x="260" y="78" text-anchor="middle" font-family="'Playfair Display','Cormorant SC',serif" font-weight="900" font-size="88" letter-spacing="10" fill="currentColor">VRASA</text><g transform="translate(260,96)" stroke-linecap="round" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="-108" y1="0" x2="-22" y2="0"/><line x1="22" y1="0" x2="108" y2="0"/><path d="M -22 0 C -16 -6,-8 -6,-4 -3"/><path d="M 22 0 C 16 -6,8 -6,4 -3"/></g><circle cx="260" cy="96" r="2.2" fill="currentColor"/><text x="260" y="130" text-anchor="middle" font-family="'Cormorant Garamond','Cormorant',Georgia,serif" font-style="italic" font-weight="400" font-size="17" letter-spacing="3" fill="currentColor" opacity="0.72">by Sri Vrashank</text></svg></a>
+  <div class="site-nav__links">
+    <a href="index.html">Home</a>
+    <a href="archive.html">Portfolio</a>
+    <a href="about.html" class="is-active">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</nav>
+<div class="page-veil" id="page-veil" aria-hidden="true"></div>
+
+<!-- ══ SECTION 0: PARTICLE HERO ══ -->
+<section class="decay-hero" aria-label="Particle decay animation">
+
+  <!-- Left: canvas -->
+  <div class="decay-hero__canvas-wrap">
+    <canvas id="decay-canvas" aria-hidden="true"></canvas>
+    <p class="decay-hero__eq-badge">Z&prime;(B&minus;L) &rarr; e&thinsp;&thinsp;+&thinsp;&thinsp;e&#8315; &ensp;&middot;&ensp; &radic;s &asymp; 91.2 GeV</p>
+  </div>
+
+  <!-- Right: physics panel -->
+  <div class="decay-hero__panel">
+    <span class="physics-eyebrow">Also a</span>
+    <h2 class="physics-title">Particle Physicist</h2>
+    <p class="physics-sub">
+      M.Sc. Physics · Ludwig Maximilian University of Munich<br>
+      Currently seeking PhD positions in particle phenomenology
+    </p>
+    <div class="physics-rule"></div>
+    <div class="physics-bio">
+      <p>
+        I hold a B.Sc. in Physics, Mathematics, and Electronics from CHRIST University,
+        Bangalore, and am completing an M.Sc. in Physics at LMU Munich — focused on
+        particle phenomenology and data-driven simulations. My master's thesis at the
+        Max Planck Institute for Physics built simulation frameworks for exotic B&minus;L boson
+        searches. In 2024&ndash;25 I was at CERN in Geneva as a Run Control Expert, maintaining
+        real-time data acquisition during live detector runs.
+        <br><br>
+        The two practices — physics and photography — feel, to me, like the same instinct:
+        <em>trying to describe something precisely enough that it becomes visible.</em>
+      </p>
+    </div>
+    <a class="cv-btn" href="CV_Sri_Vrushank_PhD.pdf" target="_blank" rel="noopener">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2h5l3 3v7H2V2z" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M7 2v3h3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4 6.5h4M4 8.5h3" stroke-linecap="round"/>
+      </svg>
+      View Full CV ↗
+    </a>
+
+    <!-- Scroll hint -->
+    <div class="decay-hero__scroll" style="position:relative;bottom:auto;right:auto;margin-top:40px;align-self:center;">
+      <span>Scroll</span>
+      <svg width="12" height="16" viewBox="0 0 12 16" fill="none" stroke="currentColor" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg"><path d="M6 1v13M1 10l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══ SECTION 1: PROFILE ══ -->
+<section class="about-profile">
+  <div class="profile-photo">
+    <img src="me_about.jpg" alt="Sri Vrushank Ayyagari">
+  </div>
+  <div class="profile-text">
+    <span class="profile-eyebrow">VRASA · Munich · Est. 2019</span>
+    <h1 class="profile-name">Sri Vrushank<br>Ayyagari</h1>
+    <div class="profile-rule"></div>
+    <div class="profile-facts">
+      <div class="fact">
+        <span class="fact__label">Discipline</span>
+        <span class="fact__value">Fashion Photography · Particle Physics</span>
+      </div>
+      <div class="fact">
+        <span class="fact__label">Based</span>
+        <span class="fact__value">Munich, Germany</span>
+      </div>
+      <div class="fact">
+        <span class="fact__label">Available</span>
+        <span class="fact__value">India · Europe · Worldwide</span>
+      </div>
+      <div class="fact">
+        <span class="fact__label">Contact</span>
+        <span class="fact__value">vrasabysrivrushank@hotmail.com</span>
+      </div>
+    </div>
+    <p class="profile-bio">
+      I make photographs that hold a look. Working between India and Europe —
+      shooting fashion editorials, weddings, and portraits. VRASA started as a journal:
+      <em>every shoot is an issue, complete in itself.</em>
+    </p>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <span>© 2019–2026 VRASA</span>
+  <span>Munich · India · Worldwide</span>
+  <a href="archive.html">↗ View Portfolio</a>
+</footer>
+
+<!-- ══ PARTICLE DECAY / LHC DETECTOR ANIMATION ══ -->
+<script>
+(function () {
+'use strict';
+
+const canvas = document.getElementById('decay-canvas');
+const ctx    = canvas.getContext('2d');
+let dpr = window.devicePixelRatio || 1;
+let W, H, vx, vy, R; // R = bending radius
+
+/* ── Detector layer definitions (radii as fractions of H) ── */
+const PIPE_R  = 0.030;
+const DEG = Math.PI / 180;
+
+const TRACKER_RINGS = [
+  { r_in: 0.042, r_out: 0.056 },
+  { r_in: 0.066, r_out: 0.080 },
+  { r_in: 0.092, r_out: 0.106 },
+  { r_in: 0.116, r_out: 0.130 },
+  { r_in: 0.142, r_out: 0.156 },
+];
+
+const CELL_LAYERS = [
+  {
+    name: 'ECAL', r_in: 0.172, r_out: 0.212, dphiDeg: 4,
+    bgColor: 'rgba(210,195,55,.07)', strokeColor: 'rgba(210,195,55,.16)',
+    hitPos: '#ff4820', hitNeg: '#2050ff', labelColor: '#c8b838'
+  },
+  {
+    name: 'HCAL', r_in: 0.228, r_out: 0.330, dphiDeg: 6,
+    bgColor: 'rgba(210,120,35,.06)', strokeColor: 'rgba(210,120,35,.13)',
+    hitPos: '#ff6820', hitNeg: '#2060f0', labelColor: '#c87830'
+  },
+  {
+    name: 'Muon', r_in: 0.368, r_out: 0.452, dphiDeg: 14,
+    bgColor: 'rgba(180,190,225,.05)', strokeColor: 'rgba(180,190,225,.11)',
+    hitPos: '#ffaa80', hitNeg: '#80aaff', labelColor: '#a0b0d0'
+  },
+];
+
+/* ── Hit state (persistent across frames) ── */
+let hitState = { pos: {}, neg: {} }; // key = layerIndex, value = phi_hit (radians, angle from +x)
+let animPhase = 0; // 0=pre-boot 1=incoming 2=flash 3=decay 4=hold
+let animStart = null;
+const LOOP = 11.0; // total loop duration in seconds
+// Timing (seconds within each loop)
+const T_IN_START  = 0.0;
+const T_IN_END    = 1.5;
+const T_FLASH_MID = 1.7;
+const T_DECAY_END = 4.5;
+const T_HOLD_END  = LOOP;
+
+/* ── Resize ── */
+function resize() {
+  const rect = canvas.getBoundingClientRect();
+  W = rect.width;  H = rect.height;
+  canvas.width  = Math.round(W * dpr);
+  canvas.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  vx = W * 0.12;        // vertex x — near left edge of canvas
+  vy = H * 0.50;        // vertex y — vertical center
+  R  = H * 1.35;        // bending radius
+}
+window.addEventListener('resize', () => { resize(); });
+// Defer first resize until canvas has layout dimensions
+requestAnimationFrame(resize);
+
+/* ── Helpers ── */
+function ease(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+
+// Distance from vertex along the curved track (θ parameter)
+// d = 2R * sin(θ/2)  →  θ = 2*arcsin(d/(2R))
+function thetaForRadius(r) { return 2 * Math.asin(clamp(r / (2*R), 0, 1)); }
+
+// Hit angle from vertex at detector radius r (signed: positive = e⁻/down, negative = e⁺/up)
+// x_hit = vx + r*sqrt(1-(r/(2R))²)
+// y_offset = ±r²/(2R)  [+ for e⁻, - for e⁺]
+function hitAngle(r, sign) {
+  const yOff = sign * (r*r) / (2*R);
+  const xOff = r * Math.sqrt(Math.max(0, 1 - Math.pow(r/(2*R), 2)));
+  return Math.atan2(yOff, xOff);
+}
+
+// Track position at θ (screen coords: y positive downward)
+// e⁺ curves UP (y decreases), center at (vx, vy - R)
+// e⁻ curves DOWN (y increases), center at (vx, vy + R)
+function trackPos(theta, sign) {
+  // sign: -1 for e⁺ (up), +1 for e⁻ (down)
+  const cx = vx, cy = vy + sign * R;
+  const startAngle = (sign < 0) ? Math.PI/2 : -Math.PI/2;
+  const angle = startAngle - sign * theta;
+  return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) };
+}
+
+/* ── Draw detector cell (arc band) ── */
+function drawCell(r_in, r_out, phi1, phi2, fill, stroke) {
+  ctx.beginPath();
+  ctx.arc(vx, vy, r_out, phi1, phi2, false);
+  ctx.arc(vx, vy, r_in,  phi2, phi1, true);
+  ctx.closePath();
+  if (fill)   { ctx.fillStyle   = fill;   ctx.fill();   }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 0.6; ctx.stroke(); }
+}
+
+/* ── Draw full detector background ── */
+function drawDetector() {
+  // Grid of faint dots
+  ctx.fillStyle = 'rgba(244,241,234,0.03)';
+  for (let gx = 40; gx < W; gx += 50)
+    for (let gy = 20; gy < H; gy += 40) {
+      ctx.beginPath(); ctx.arc(gx, gy, 0.8, 0, Math.PI*2); ctx.fill();
+    }
+
+  // Beam pipe
+  ctx.beginPath();
+  ctx.arc(vx, vy, H * PIPE_R, -Math.PI, Math.PI);
+  ctx.strokeStyle = 'rgba(200,220,240,0.28)';
+  ctx.lineWidth   = 1.5;
+  ctx.stroke();
+
+  // Tracker rings
+  TRACKER_RINGS.forEach(({ r_in, r_out }) => {
+    // Draw the ring arc (only right half ±150° for visual)
+    const a0 = -150*DEG, a1 = 150*DEG;
+    ctx.beginPath();
+    ctx.arc(vx, vy, H * r_out, a0, a1);
+    ctx.strokeStyle = 'rgba(70,130,220,0.12)';
+    ctx.lineWidth   = H * (r_out - r_in) * 0.85;
+    ctx.stroke();
+  });
+
+  // Segmented ECAL / HCAL / Muon cells
+  const PHI_MAX = 100 * DEG; // draw cells over ±100°
+  CELL_LAYERS.forEach((layer) => {
+    const r_in  = H * layer.r_in;
+    const r_out = H * layer.r_out;
+    const dphi  = layer.dphiDeg * DEG;
+    for (let phi = -PHI_MAX; phi < PHI_MAX; phi += dphi) {
+      drawCell(r_in, r_out, phi, phi + dphi * 0.88, layer.bgColor, layer.strokeColor);
+    }
+  });
+}
+
+/* ── Draw hit cells for a given layer and angle ── */
+function drawHitCell(layerIdx, phiHit, isPos, alpha) {
+  const layer  = CELL_LAYERS[layerIdx];
+  const r_in   = H * layer.r_in;
+  const r_out  = H * layer.r_out;
+  const dphi   = layer.dphiDeg * DEG;
+  const cellI  = Math.floor(phiHit / dphi);
+  const phi0   = cellI * dphi;
+  const col    = isPos ? layer.hitPos : layer.hitNeg;
+
+  // Glow effect: draw multiple times
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  // Outer glow
+  ctx.shadowColor = col;
+  ctx.shadowBlur  = 16;
+  drawCell(r_in, r_out, phi0, phi0 + dphi * 0.88, col, null);
+  ctx.shadowBlur  = 0;
+  ctx.restore();
+}
+
+/* ── Draw curved track arc ── */
+function drawTrack(thetaMax, sign, color, alpha, blur) {
+  if (thetaMax <= 0) return;
+  const cly   = vy + sign * R;
+  const start = (sign < 0) ?  Math.PI/2         : -Math.PI/2;
+  const end   = (sign < 0) ?  Math.PI/2 - thetaMax : -Math.PI/2 + thetaMax;
+  const acw   = (sign < 0); // anticlockwise for e⁺ (going up)
+
+  ctx.save();
+  ctx.globalAlpha  = alpha;
+  ctx.shadowColor  = color;
+  ctx.shadowBlur   = blur * 2;
+  ctx.strokeStyle  = color.replace(/[\d.]+\)$/, '0.25)');
+  ctx.lineWidth    = 6;
+  ctx.lineCap      = 'round';
+  ctx.beginPath();
+  ctx.arc(vx, cly, R, start, end, acw);
+  ctx.stroke();
+  ctx.shadowBlur   = blur;
+  ctx.strokeStyle  = color;
+  ctx.lineWidth    = 1.8;
+  ctx.beginPath();
+  ctx.arc(vx, cly, R, start, end, acw);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/* ── Glow dot ── */
+function glowDot(x, y, r, col, blur, alpha) {
+  ctx.save();
+  ctx.globalAlpha  = alpha;
+  ctx.shadowColor  = col; ctx.shadowBlur = blur;
+  ctx.fillStyle    = col;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+/* ── Glow line ── */
+function glowLine(x1,y1,x2,y2,col,lw,blur,alpha) {
+  ctx.save();
+  ctx.globalAlpha  = alpha;
+  ctx.shadowColor  = col; ctx.shadowBlur = blur;
+  ctx.strokeStyle  = col; ctx.lineWidth  = lw; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.restore();
+}
+
+/* ── Mono label ── */
+function monoLabel(text, x, y, col, alpha, size) {
+  size = size || 11;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle   = col;
+  ctx.font        = size + 'px "Space Mono",monospace';
+  ctx.fillText(text, x, y);
+  ctx.restore();
+}
+
+/* ── LHC detector outer labels ── */
+function drawLabels() {
+  const labels = [
+    { name: 'Tracker', r: H * 0.100, color: 'rgba(70,130,220,0.45)' },
+    { name: 'ECAL',    r: H * 0.192, color: 'rgba(210,195,55,0.45)' },
+    { name: 'HCAL',    r: H * 0.280, color: 'rgba(210,120,35,0.45)' },
+    { name: 'Muon',    r: H * 0.410, color: 'rgba(180,190,225,0.45)' },
+  ];
+  const labelAngle = -62 * DEG; // upper-right direction
+  labels.forEach(({ name, r, color }) => {
+    const lx = vx + r * Math.cos(labelAngle) + 6;
+    const ly = vy + r * Math.sin(labelAngle) - 5;
+    if (lx > 10 && ly > 10 && lx < W - 10 && ly < H - 10) {
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.font = '9px "Space Mono",monospace';
+      ctx.fillText(name, lx, ly);
+      ctx.restore();
+    }
+  });
+
+  // CERN / LHC annotation (top-left)
+  monoLabel('LHC · CERN · CMS Detector', vx + H*0.48, 32, 'rgba(244,241,234,0.13)', 1, 9);
+  monoLabel('B field: 3.8 T', vx + H*0.48, 46, 'rgba(244,241,234,0.10)', 1, 9);
+}
+
+/* ── Main draw frame ── */
+function draw(t) {
+  // loop progress
+  const lt = t % LOOP;
+
+  // Reset hits on loop restart
+  if (lt < 0.05 && t > 0.1) {
+    hitState = { pos: {}, neg: {} };
+  }
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = '#02020a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Detector static structure
+  drawDetector();
+  drawLabels();
+
+  /* ── Incoming Z' beam (0 → T_IN_END, persistent after) ── */
+  const inP   = clamp((lt - T_IN_START) / (T_IN_END - T_IN_START), 0, 1);
+  const beamX = vx * 0.15 + (vx - vx * 0.15) * ease(inP);
+  const beamAlpha = lt < T_IN_END ? ease(inP) : 1.0;
+
+  if (lt > T_IN_START) {
+    // Track line
+    glowLine(W * 0.01, vy, lt < T_IN_END ? beamX : vx, vy, 'rgba(212,168,64,0.40)', 5, 20, beamAlpha * 0.85);
+    glowLine(W * 0.01, vy, lt < T_IN_END ? beamX : vx, vy, 'rgba(240,200,80,0.95)', 1.6, 6, beamAlpha);
+    // Moving head
+    if (lt < T_IN_END) {
+      glowDot(beamX, vy, 5, '#f5d060', 24, beamAlpha);
+    }
+    // Label
+    const lAlpha = clamp((lt - 0.3) / 0.5, 0, 1) * beamAlpha;
+    monoLabel("Z′", W * 0.01 + 6, vy - 16, '#d4a840', lAlpha * 0.88, 11);
+    monoLabel("B−L Boson", W * 0.01 + 22, vy - 16, 'rgba(212,168,64,.55)', lAlpha * 0.75, 9);
+  }
+
+  /* ── Vertex flash ── */
+  if (lt > T_IN_END - 0.2 && lt < T_IN_END + 0.7) {
+    const ft  = (lt - (T_IN_END - 0.2)) / 0.9;
+    const fa  = ft < 0.4 ? ft / 0.4 : 1 - (ft - 0.4) / 0.6;
+    ctx.save();
+    ctx.globalAlpha = fa * 0.72;
+    const grad = ctx.createRadialGradient(vx,vy,0, vx,vy,50*Math.min(ft*2,1));
+    grad.addColorStop(0, 'rgba(255,255,255,1)');
+    grad.addColorStop(0.3,'rgba(200,160,255,0.55)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(vx,vy,50,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  /* ── Vertex dot (permanent once decay starts) ── */
+  if (lt > T_IN_END) {
+    const va = clamp((lt - T_IN_END) / 0.3, 0, 1);
+    glowDot(vx, vy, 4, '#ffffff', 14, va);
+  }
+
+  /* ── Decay tracks ── */
+  if (lt > T_IN_END + 0.1) {
+    const decayP  = clamp((lt - (T_IN_END + 0.1)) / (T_DECAY_END - T_IN_END - 0.1), 0, 1);
+    // θ at current track extension
+    const maxR    = H * CELL_LAYERS[2].r_out * 1.05; // just past muon
+    const maxTheta = thetaForRadius(maxR);
+    const theta   = maxTheta * ease(decayP);
+
+    // Draw e⁺ (up, red, sign = -1)
+    drawTrack(theta, -1, '#ff5030', 1.0, 10);
+    // Draw e⁻ (down, blue, sign = +1)
+    drawTrack(theta, +1, '#3060ff', 1.0, 10);
+
+    // Track head dots
+    if (decayP < 0.98) {
+      const posEnd = trackPos(theta, -1);
+      const negEnd = trackPos(theta, +1);
+      glowDot(posEnd.x, posEnd.y, 4.5, '#ff5030', 18, 1.0);
+      glowDot(negEnd.x, negEnd.y, 4.5, '#3060ff', 18, 1.0);
+    }
+
+    // Particle labels (near tips, appear after 40% travel)
+    if (decayP > 0.4) {
+      const la = clamp((decayP - 0.4) / 0.25, 0, 1);
+      const pe = trackPos(theta * 0.82, -1);
+      const ne = trackPos(theta * 0.82, +1);
+      monoLabel('e⁺', pe.x + 8, pe.y - 8, '#ff7050', la * 0.92, 11);
+      monoLabel('e⁻', ne.x + 8, ne.y + 18, '#5080ff', la * 0.92, 11);
+    }
+
+    // Check detector layer hits
+    CELL_LAYERS.forEach((layer, i) => {
+      const layerR     = H * (layer.r_in + layer.r_out) / 2;
+      const thetaHit   = thetaForRadius(layerR);
+      if (theta >= thetaHit) {
+        // Compute hit angle
+        if (hitState.pos[i] === undefined) {
+          hitState.pos[i] = hitAngle(layerR, -1); // e⁺ (sign=-1 → y goes up → negative phi)
+        }
+        if (hitState.neg[i] === undefined) {
+          hitState.neg[i] = hitAngle(layerR, +1); // e⁻ (sign=+1 → y goes down → positive phi)
+        }
+      }
+    });
+  }
+
+  /* ── Persistent hit cells (remain lit forever once triggered) ── */
+  CELL_LAYERS.forEach((layer, i) => {
+    const r_in  = H * layer.r_in;
+    const r_out = H * layer.r_out;
+    const dphi  = layer.dphiDeg * DEG;
+
+    if (hitState.pos[i] !== undefined) {
+      // Also draw a couple of adjacent cells with diminishing alpha (shower spread)
+      [-1, 0, 1].forEach(dCell => {
+        const phi0 = Math.floor(hitState.pos[i] / dphi) * dphi + dCell * dphi;
+        const alpha = dCell === 0 ? 1.0 : 0.35;
+        ctx.save(); ctx.globalAlpha = alpha;
+        ctx.shadowColor = layer.hitPos; ctx.shadowBlur = 18;
+        drawCell(r_in, r_out, phi0, phi0 + dphi*0.88, layer.hitPos, null);
+        ctx.restore();
+      });
+    }
+    if (hitState.neg[i] !== undefined) {
+      [-1, 0, 1].forEach(dCell => {
+        const phi0 = Math.floor(hitState.neg[i] / dphi) * dphi + dCell * dphi;
+        const alpha = dCell === 0 ? 1.0 : 0.35;
+        ctx.save(); ctx.globalAlpha = alpha;
+        ctx.shadowColor = layer.hitNeg; ctx.shadowBlur = 18;
+        drawCell(r_in, r_out, phi0, phi0 + dphi*0.88, layer.hitNeg, null);
+        ctx.restore();
+      });
+    }
+  });
+
+  /* ── Hold phase: slow pulse on tracks ── */
+  if (lt > T_DECAY_END) {
+    const holdT  = lt - T_DECAY_END;
+    const pulse  = 0.85 + 0.15 * Math.sin(holdT * 1.4);
+    const maxR   = H * CELL_LAYERS[2].r_out * 1.05;
+    const maxTheta = thetaForRadius(maxR);
+    drawTrack(maxTheta, -1, '#ff5030', pulse, 8);
+    drawTrack(maxTheta, +1, '#3060ff', pulse, 8);
+    // Track tip labels persist
+    const pe = trackPos(maxTheta * 0.82, -1);
+    const ne = trackPos(maxTheta * 0.82, +1);
+    monoLabel('e⁺', pe.x + 8, pe.y - 8, '#ff7050', 0.88, 11);
+    monoLabel('e⁻', ne.x + 8, ne.y + 18, '#5080ff', 0.88, 11);
+  }
+
+  /* ── Fade out at loop end ── */
+  if (lt > LOOP - 1.2) {
+    const fadeAlpha = clamp((lt - (LOOP - 1.2)) / 1.2, 0, 1);
+    ctx.fillStyle = `rgba(2,2,10,${ease(fadeAlpha)})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+}
+
+/* ── Animation loop ── */
+function tick(ts) {
+  if (!animStart) animStart = ts;
+  draw((ts - animStart) / 1000);
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+})();
+</script>
+
+<!-- Nav scroll + page transitions -->
+<script>
+!function(){
+  var n=document.getElementById('site-nav'); if(!n) return;
+  function u(){ n.classList.toggle('is-scrolled',window.scrollY>50); }
+  window.addEventListener('scroll',u,{passive:true}); u();
+}();
+!function(){
+  var v=document.getElementById('page-veil'); if(!v) return;
+  v.style.opacity='1'; v.style.transition='none';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      v.style.transition='opacity .52s cubic-bezier(.4,0,.2,1)';
+      v.style.opacity='0';
+    });
+  });
+  document.querySelectorAll('a[href]').forEach(function(a){
+    var h=a.getAttribute('href');
+    if(!h||/^(#|https?:|mailto:|tel:|javascript)/.test(h)) return;
+    a.addEventListener('click',function(e){
+      if(e.metaKey||e.ctrlKey||e.shiftKey) return;
+      e.preventDefault();
+      v.style.transition='opacity .38s cubic-bezier(.4,0,.2,1)';
+      v.style.opacity='1'; v.style.pointerEvents='all';
+      setTimeout(function(){ window.location.href=h; },400);
+    });
+  });
+}();
+</script>
+</body>
+</html>
