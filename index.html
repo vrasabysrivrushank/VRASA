@@ -76,18 +76,20 @@
   .cover__dot.is-active { background:#e8c27a; }
   /* Scroll cue — bottom center */
   .cover__scroll-hint {
-    position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
-    display:flex; flex-direction:column; align-items:center; gap:5px;
-    font-family:var(--mono); font-size:7px; letter-spacing:.22em; text-transform:uppercase;
-    color:rgba(255,255,255,.28); z-index:10; pointer-events:none;
+    position:absolute; bottom:18px; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:9px; letter-spacing:.28em; text-transform:uppercase;
+    color:rgba(255,255,255,.72); z-index:10; pointer-events:none;
   }
   .cover__scroll-hint::after {
-    content:''; width:1px; height:20px; background:rgba(255,255,255,.18);
-    animation:scrollline 1.5s ease-in-out infinite;
+    content:''; width:1.5px; height:36px; background:rgba(255,255,255,.55);
+    animation:scrollline 1.4s ease-in-out infinite;
   }
   @keyframes scrollline {
-    0%,100%{transform:scaleY(0);transform-origin:top}
-    50%{transform:scaleY(1);transform-origin:top}
+    0%   { transform:scaleY(0); transform-origin:top; opacity:0; }
+    30%  { opacity:1; }
+    70%  { transform:scaleY(1); transform-origin:top; opacity:1; }
+    100% { transform:scaleY(1); transform-origin:top; opacity:0; }
   }
   .vrasa-mark { display:block; }
   .split__logo-wrap .vrasa-mark { width:clamp(160px,26vw,340px); color:var(--black); }
@@ -503,15 +505,15 @@
   .scatter__scroll {
     position: absolute;
     bottom: 24px; left: 50%; transform: translateX(-50%);
-    font-family: var(--mono); font-size: 9px; letter-spacing: .26em; text-transform: uppercase;
-    color: rgba(244,241,234,.18);
+    font-family: var(--mono); font-size: 9px; letter-spacing: .28em; text-transform: uppercase;
+    color: rgba(244,241,234,.72);
     z-index: 10; pointer-events: none;
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
   }
   .scatter__scroll::after {
-    content: ''; width: 1px; height: 22px;
-    background: rgba(244,241,234,.12);
-    animation: scrollline 1.5s ease-in-out infinite;
+    content: ''; width: 1.5px; height: 36px;
+    background: rgba(244,241,234,.55);
+    animation: scrollline 1.4s ease-in-out infinite;
   }
 
   /* ── Instax mini card ── */
@@ -1175,10 +1177,15 @@
   ];
 
   function initCoverNav() {
-    const dots      = document.querySelectorAll('#cover-dots .cover__dot');
-    const headlineEl= document.getElementById('cover-headline');
-    const tag1El    = document.getElementById('cover-tag-line1');
-    const tag2El    = document.getElementById('cover-tag-line2');
+    const dots       = document.querySelectorAll('#cover-dots .cover__dot');
+    const headlineEl = document.getElementById('cover-headline');
+    const tag1El     = document.getElementById('cover-tag-line1');
+    const tag2El     = document.getElementById('cover-tag-line2');
+    const total      = COVER_DATA.length;
+
+    // Declare before switchTo so there's no TDZ issue
+    let currentIdx    = 0;
+    let slideshowTimer = null;
 
     function switchTo(idx) {
       currentIdx = idx;
@@ -1190,47 +1197,34 @@
         img.classList.toggle('is-active', parseInt(img.dataset.idx) === idx)
       );
 
-      // Fade headline
+      // Fade headline out, swap text, fade back in
       headlineEl.classList.add('fading');
       setTimeout(() => {
         headlineEl.innerHTML = d.headline;
         headlineEl.classList.remove('fading');
       }, 360);
 
-      // Update tags
+      // Tags
       tag1El.textContent = d.tag1;
       tag2El.textContent = d.tag2;
 
-      // Update dots
+      // Dots
       dots.forEach((dot, i) => dot.classList.toggle('is-active', i === idx));
-    }
-
-    let currentIdx = 0;
-    let slideshowTimer = null;
-
-    function nextSlide() {
-      currentIdx = (currentIdx + 1) % COVER_DATA.length;
-      switchTo(currentIdx);
     }
 
     function startAutoplay() {
       clearInterval(slideshowTimer);
-      slideshowTimer = setInterval(nextSlide, 1000);
+      slideshowTimer = setInterval(() => {
+        currentIdx = (currentIdx + 1) % total;
+        switchTo(currentIdx);
+      }, 2500);
     }
 
-    // Manual dot click resets the timer so it doesn't skip mid-cycle
+    // Manual dot — jump to slide and reset timer
     dots.forEach((dot, i) => dot.addEventListener('click', () => {
-      currentIdx = i;
       switchTo(i);
       startAutoplay();
     }));
-
-    // Pause on hover, resume on leave
-    const coverEl = document.querySelector('.cover');
-    if (coverEl) {
-      coverEl.addEventListener('mouseenter', () => clearInterval(slideshowTimer));
-      coverEl.addEventListener('mouseleave', startAutoplay);
-    }
 
     startAutoplay();
   }

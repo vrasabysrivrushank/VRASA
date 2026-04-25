@@ -135,10 +135,12 @@
   }
   .arch-card:hover .arch-card__img { transform:scale(1.06); }
 
-  /* Dark scrim */
+  /* Dark scrim — dark top + dark bottom, clear in middle */
   .arch-card__scrim {
     position:absolute; inset:0;
-    background:linear-gradient(to top, rgba(0,0,0,.82) 0%, rgba(0,0,0,.08) 55%, transparent 100%);
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,.72) 0%, transparent 38%),
+      linear-gradient(to top,    rgba(0,0,0,.88) 0%, rgba(0,0,0,.12) 52%, transparent 100%);
     transition:opacity .3s ease;
   }
 
