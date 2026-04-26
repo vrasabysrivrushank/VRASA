@@ -287,8 +287,8 @@
      GALLERY PANEL — full-screen slide-in
   ===================================================== */
   .gallery-panel {
-    position:fixed; inset:0; background:var(--cream);
-    z-index:300;
+    position:fixed; inset:0; background:#0A0A0A;
+    z-index:1100;
     transform:translateY(100%);
     transition:transform .55s cubic-bezier(.25,.46,.45,.94);
     display:flex; flex-direction:column; overflow:hidden;
@@ -298,32 +298,55 @@
   .gallery-panel__header {
     display:flex; align-items:center; justify-content:space-between;
     padding:14px 28px;
-    border-bottom:1px solid var(--cream-border);
+    border-bottom:1px solid rgba(244,241,234,.09);
     flex-shrink:0;
   }
   .gallery-panel__back {
-    background:none; border:none; cursor:pointer;
-    font-family:var(--mono); font-size:8px; letter-spacing:.18em;
-    text-transform:uppercase; color:var(--muted);
-    padding:0; transition:color .2s;
+    font-family:var(--mono); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:#f4f1ea;
+    cursor:pointer; text-decoration:none;
+    border:1px solid rgba(244,241,234,.45); padding:8px 20px;
+    background:none;
+    transition:color .2s, border-color .2s, background .2s;
   }
-  .gallery-panel__back:hover { color:var(--black); }
+  .gallery-panel__back:hover {
+    background:rgba(244,241,234,.08);
+    border-color:rgba(244,241,234,.75);
+  }
+
+  /* Bottom back button inside the image grid */
+  .img-grid__footer {
+    padding:40px 28px 56px;
+    display:flex; justify-content:flex-start;
+  }
+  .img-grid__footer-btn {
+    font-family:var(--mono); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:#f4f1ea;
+    cursor:pointer; text-decoration:none;
+    border:1px solid rgba(244,241,234,.45); padding:10px 22px;
+    background:none;
+    transition:color .2s, border-color .2s, background .2s;
+  }
+  .img-grid__footer-btn:hover {
+    background:rgba(244,241,234,.08);
+    border-color:rgba(244,241,234,.75);
+  }
   .gallery-panel__title-wrap {
     display:flex; align-items:center; gap:16px;
   }
   .gallery-panel__title {
-    font-family:var(--sc); font-size:16px; letter-spacing:.06em; color:var(--black);
+    font-family:var(--sc); font-size:16px; letter-spacing:.06em; color:#f4f1ea;
   }
   .gallery-panel__count {
     font-family:var(--mono); font-size:11px; letter-spacing:.13em;
-    text-transform:uppercase; color:var(--muted);
+    text-transform:uppercase; color:rgba(244,241,234,.38);
   }
   .gallery-panel__close {
     background:none; border:none; cursor:pointer;
-    font-size:20px; color:var(--muted); line-height:1; padding:0;
+    font-size:20px; color:rgba(244,241,234,.38); line-height:1; padding:0;
     transition:color .2s;
   }
-  .gallery-panel__close:hover { color:var(--black); }
+  .gallery-panel__close:hover { color:#f4f1ea; }
   .gallery-panel__body {
     flex:1; overflow-y:auto; overflow-x:hidden;
   }
@@ -381,7 +404,7 @@
   ===================================================== */
   .lb {
     position:fixed; inset:0; background:rgba(0,0,0,.94);
-    z-index:500; display:none; align-items:center; justify-content:center;
+    z-index:1200; display:none; align-items:center; justify-content:center;
   }
   .lb.is-open { display:flex; }
   .lb__img {
@@ -1388,8 +1411,23 @@
       grid.appendChild(item);
     });
 
+    /* Footer back button at the bottom of the grid */
+    const footer = document.createElement('div');
+    footer.className = 'img-grid__footer';
+    const footerBtn = document.createElement('button');
+    footerBtn.className = 'img-grid__footer-btn';
+    if (isSubfolder && galleryProject.subfolders) {
+      footerBtn.textContent = '← Back to Series';
+      footerBtn.onclick = () => { gallerySubfolder = null; renderSubfolderCards(); };
+    } else {
+      footerBtn.textContent = '← Close Gallery';
+      footerBtn.onclick = closeGallery;
+    }
+    footer.appendChild(footerBtn);
+
     galleryBody.innerHTML = '';
     galleryBody.appendChild(grid);
+    galleryBody.appendChild(footer);
     galleryBody.scrollTop = 0;
   }
 
