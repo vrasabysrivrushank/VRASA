@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project — VRASA by Sri Vrushank</title>
+  <meta name="description" content="Photography project by Sri Vrushank — VRASA." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&family=Space+Mono:ital,wght@0,400;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/vrasa.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0A0A0A; --fg: #f4f1ea; --muted: rgba(244,241,234,.38);
+      --border: rgba(244,241,234,.09);
+      --mono: 'Space Mono', monospace;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sc: 'Cormorant SC', 'Cormorant Garamond', serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--serif); }
+
+    /* ── NAV ── */
+    .site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      background: transparent;
+      transition: background .3s, border-color .3s;
+    }
+    .site-nav.is-scrolled {
+      background: rgba(10,10,10,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .site-nav__logo { color: var(--fg); text-decoration: none; }
+    .site-nav__links { display: flex; gap: 36px; }
+    .site-nav__links a {
+      font-family: var(--mono); font-size: 11px; letter-spacing: .22em;
+      text-transform: uppercase; color: rgba(244,241,234,.55);
+      text-decoration: none; transition: color .2s;
+    }
+    .site-nav__links a:hover, .site-nav__links a.is-active { color: var(--fg); }
+
+    /* ── HERO ── */
+    .project-hero {
+      position: relative;
+      width: 100%; height: 100vh;
+      overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .project-hero__img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: 50% 30%;
+      will-change: transform;
+    }
+    .project-hero__gradient {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.18) 0%,
+        rgba(0,0,0,.0)  35%,
+        rgba(0,0,0,.0)  50%,
+        rgba(0,0,0,.72) 82%,
+        rgba(0,0,0,.92) 100%
+      );
+    }
+    .project-hero__content {
+      position: relative; z-index: 2;
+      padding: 0 52px 52px;
+      display: flex; justify-content: space-between; align-items: flex-end;
+    }
+    .project-hero__left {}
+    .project-hero__eyebrow {
+      font-family: var(--mono); font-size: 11px; letter-spacing: .28em;
+      text-transform: uppercase; color: rgba(244,241,234,.62);
+      margin-bottom: 16px; display: block;
+    }
+    .project-hero__title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic; font-weight: 300;
+      font-size: clamp(52px, 7vw, 96px);
+      letter-spacing: .02em; line-height: 1;
+      color: #fff;
+    }
+    .project-hero__right {
+      text-align: right; padding-bottom: 6px;
+    }
+    .project-hero__meta-line {
+      font-family: var(--mono); font-size: 11px; letter-spacing: .2em;
+      text-transform: uppercase; color: rgba(244,241,234,.55);
+      line-height: 2;
+    }
+    /* scroll indicator */
+    .hero-scroll {
+      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+      z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 6px;
+      font-family: var(--mono); font-size: 9px; letter-spacing: .22em;
+      text-transform: uppercase; color: rgba(244,241,234,.38);
+      animation: scrollbounce 2.2s ease-in-out infinite;
+    }
+    @keyframes scrollbounce {
+      0%,100% { transform: translateX(-50%) translateY(0); opacity:.4; }
+      50%      { transform: translateX(-50%) translateY(6px); opacity:.8; }
+    }
+    .hero-scroll svg { opacity: .5; }
+
+    /* ── SUBTITLE BAR ── */
+    .project-meta-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 28px 52px;
+      border-bottom: 1px solid var(--border);
+    }
+    .project-meta-bar__title {
+      font-family: var(--sc); font-size: clamp(22px, 2.4vw, 32px);
+      font-weight: 300; letter-spacing: .06em;
+    }
+    .project-meta-bar__right {
+      display: flex; gap: 40px; align-items: center;
+    }
+    .project-meta-item {
+      font-family: var(--mono); font-size: 10px; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--muted); line-height: 1.8;
+    }
+    .project-meta-item span { display: block; color: rgba(244,241,234,.72); }
+    .back-link {
+      font-family: var(--mono); font-size: 10px; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--muted); text-decoration: none;
+      border: 1px solid var(--border); padding: 8px 16px;
+      transition: color .2s, border-color .2s;
+    }
+    .back-link:hover { color: var(--fg); border-color: rgba(244,241,234,.3); }
+
+    /* ── FIXED BACK BUTTON (hero top-right, below nav) ── */
+    .back-fixed {
+      position: fixed; top: 76px; right: 40px; z-index: 90;
+      font-family: var(--mono); font-size: 10px; letter-spacing: .22em;
+      text-transform: uppercase; color: rgba(244,241,234,.70); text-decoration: none;
+      border: 1px solid rgba(244,241,234,.22); padding: 8px 18px;
+      background: rgba(10,10,10,.55); backdrop-filter: blur(8px);
+      transition: color .2s, border-color .2s, background .2s, opacity .3s;
+    }
+    .back-fixed:hover { color: var(--fg); border-color: rgba(244,241,234,.5); background: rgba(10,10,10,.80); }
+    @media (max-width: 860px) { .back-fixed { top: 70px; right: 20px; } }
+
+    /* ── SUBFOLDER TABS ── */
+    .project-tabs {
+      display: none; gap: 0;
+      border-bottom: 1px solid var(--border);
+      padding: 0 52px;
+    }
+    .project-tabs.has-tabs { display: flex; }
+    .project-tab {
+      font-family: var(--mono); font-size: 10px; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--muted);
+      padding: 14px 20px; cursor: pointer;
+      border-bottom: 1px solid transparent; margin-bottom: -1px;
+      transition: color .2s;
+    }
+    .project-tab:hover { color: var(--fg); }
+    .project-tab.is-active { color: var(--fg); border-bottom-color: var(--fg); }
+
+    /* ── PHOTO GRID ── */
+    .project-grid {
+      padding: 6px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+    .project-grid__item {
+      position: relative; overflow: hidden;
+      aspect-ratio: 2/3;
+      background: #111;
+      cursor: pointer;
+    }
+    .project-grid__item:first-child {
+      grid-column: span 3;
+      aspect-ratio: 16/7;
+    }
+    .project-grid__item img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform .6s ease;
+    }
+    .project-grid__item:hover img { transform: scale(1.04); }
+    .project-grid__num {
+      position: absolute; bottom: 10px; right: 12px;
+      font-family: var(--mono); font-size: 9px; letter-spacing: .16em;
+      color: rgba(255,255,255,.3); pointer-events: none;
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,.96);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .28s;
+    }
+    .lightbox.is-open { opacity: 1; pointer-events: all; }
+    .lightbox__img {
+      max-width: 92vw; max-height: 90vh;
+      object-fit: contain; display: block;
+    }
+    .lightbox__close {
+      position: absolute; top: 24px; right: 28px;
+      font-family: var(--mono); font-size: 10px; letter-spacing: .2em;
+      text-transform: uppercase; color: rgba(244,241,234,.5);
+      cursor: pointer; background: none; border: none;
+      transition: color .2s;
+    }
+    .lightbox__close:hover { color: var(--fg); }
+    .lightbox__nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-family: var(--mono); font-size: 18px; color: rgba(244,241,234,.4);
+      cursor: pointer; background: none; border: none; padding: 20px;
+      transition: color .2s; user-select: none;
+    }
+    .lightbox__nav:hover { color: var(--fg); }
+    .lightbox__prev { left: 16px; }
+    .lightbox__next { right: 16px; }
+    .lightbox__counter {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      font-family: var(--mono); font-size: 10px; letter-spacing: .2em;
+      color: rgba(244,241,234,.38);
+    }
+
+    /* ── FOOTER ── */
+    .project-footer {
+      padding: 28px 52px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--mono); font-size: 10px; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .project-footer a { color: var(--muted); text-decoration: none; }
+    .project-footer a:hover { color: var(--fg); }
+
+    /* ── PAGE VEIL ── */
+    .page-veil {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg); pointer-events: none;
+    }
+
+    @media (max-width: 860px) {
+      .site-nav { padding: 0 24px; }
+      .project-hero__content { padding: 0 28px 40px; flex-direction: column; align-items: flex-start; gap: 16px; }
+      .project-hero__right { text-align: left; }
+      .project-meta-bar { flex-direction: column; align-items: flex-start; gap: 20px; padding: 24px 28px; }
+      .project-meta-bar__right { flex-wrap: wrap; gap: 20px; }
+      .project-tabs { padding: 0 28px; }
+      .project-grid { grid-template-columns: repeat(2, 1fr); padding: 4px; }
+      .project-grid__item:first-child { grid-column: span 2; aspect-ratio: 3/2; }
+      .project-footer { padding: 20px 28px; flex-wrap: wrap; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="site-nav" id="site-nav">
+  <a href="index.html" class="site-nav__logo" aria-label="VRASA Home">
+    <svg viewBox="0 0 520 148" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="height:36px;width:auto;color:inherit;display:block;">
+      <text x="260" y="78" text-anchor="middle" font-family="'Playfair Display','Cormorant SC',serif" font-weight="900" font-size="88" letter-spacing="10" fill="currentColor">VRASA</text>
+      <g transform="translate(260,96)" stroke-linecap="round" fill="none" stroke="currentColor" stroke-width="1.2">
+        <line x1="-108" y1="0" x2="-22" y2="0"/><line x1="22" y1="0" x2="108" y2="0"/>
+        <path d="M -22 0 C -16 -6,-8 -6,-4 -3"/><path d="M 22 0 C 16 -6,8 -6,4 -3"/>
+      </g>
+      <circle cx="260" cy="96" r="2.2" fill="currentColor"/>
+      <text x="260" y="130" text-anchor="middle" font-family="'Cormorant Garamond',Georgia,serif" font-style="italic" font-weight="400" font-size="17" letter-spacing="3" fill="currentColor" opacity="0.72">by Sri Vrashank</text>
+    </svg>
+  </a>
+  <div class="site-nav__links">
+    <a href="index.html">Home</a>
+    <a href="archive.html" class="is-active">Portfolio</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</nav>
+<div class="page-veil" id="page-veil" aria-hidden="true"></div>
+
+<!-- FIXED BACK BUTTON -->
+<a href="archive.html" class="back-fixed" id="back-fixed">← All Projects</a>
+
+<!-- HERO -->
+<section class="project-hero" id="project-hero">
+  <img class="project-hero__img" id="hero-img" src="" alt="" />
+  <div class="project-hero__gradient"></div>
+  <div class="project-hero__content">
+    <div class="project-hero__left">
+      <span class="project-hero__eyebrow" id="hero-eyebrow"></span>
+      <h1 class="project-hero__title" id="hero-title"></h1>
+    </div>
+    <div class="project-hero__right" id="hero-right"></div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">
+    <span>Scroll</span>
+    <svg width="10" height="14" viewBox="0 0 10 14" fill="none" stroke="currentColor" stroke-width="1.2">
+      <path d="M5 1v11M1 8l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</section>
+
+<!-- META BAR -->
+<div class="project-meta-bar" id="project-meta-bar">
+  <h2 class="project-meta-bar__title" id="meta-title"></h2>
+  <div class="project-meta-bar__right">
+    <div class="project-meta-item" id="meta-cat-item">
+      <span id="meta-cat"></span>
+    </div>
+    <div class="project-meta-item" id="meta-frames-item">
+      <span id="meta-frames"></span>
+    </div>
+    <a href="archive.html" class="back-link">← All Projects</a>
+  </div>
+</div>
+
+<!-- SUBFOLDER TABS -->
+<div class="project-tabs" id="project-tabs"></div>
+
+<!-- PHOTO GRID -->
+<main class="project-grid" id="project-grid" aria-label="Project photos"></main>
+
+<!-- FOOTER -->
+<footer class="project-footer">
+  <span>VRASA · Sri Vrushank</span>
+  <a href="archive.html">← Back to Portfolio</a>
+  <span id="footer-frames"></span>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lightbox__close" id="lb-close">Close ✕</button>
+  <button class="lightbox__nav lightbox__prev" id="lb-prev" aria-label="Previous">‹</button>
+  <img class="lightbox__img" id="lb-img" src="" alt="" />
+  <button class="lightbox__nav lightbox__next" id="lb-next" aria-label="Next">›</button>
+  <div class="lightbox__counter" id="lb-counter"></div>
+</div>
+
+<script>
+// ── Project data (mirrors archive.html) ──────────────────────────────────────
+const PROJECTS = [
+  {
+    title:'Indo-Western Blend', cat:'Fashion', frames:17, sub:'Editorial', year:'2024',
+    location:'Munich, DE',
+    hero:'shoots/fashion/bazaar/Hero_meghana_indo_western.jpg',
+    subfolders: [
+      { title:'Meghana · Bazaar', frames:5,
+        images:['Hero_meghana_indo_western.jpg','01_DSC00299.jpg','02_DSC01686-Edit.jpg','03_DSC01715-Edit.jpg','04_DSC01819.jpg'].map(f=>'shoots/fashion/bazaar/'+f) },
+      { title:'Sonakshi · Chiaroscuro', frames:6,
+        images:['01_1-DSC00371.jpg','02_2-DSC00523.jpg','03_3-DSC01097.jpg','04_4-DSC01218.jpg','05_5-DSC01222.jpg','06_6-DSC01233.jpg'].map(f=>'shoots/fashion/chiaroscuro/'+f) },
+      { title:'Shruti · Roots', frames:6,
+        images:['01_1-DSC00055.jpg','02_2-DSC00291.jpg','03_3-DSC00388.jpg','04_4-DSC01247.jpg','05_5-DSC01296.jpg','06_6-DSC01524.jpg'].map(f=>'shoots/fashion/roots/'+f) }
+    ]
+  },
+  {
+    title:'Amsterdam', cat:'Fashion', frames:20, sub:'AW25', year:'2025',
+    location:'Amsterdam, NL',
+    hero:'shoots/fashion/amsterdam/01_1-DSC00031.jpg',
+    images:['01_1-DSC00031.jpg','02_2-DSC00158.jpg','03_3-DSC00512.jpg','04_4-DSC01811.jpg','05_5-DSC01823.jpg','06_6-DSC01867.jpg','07_7-DSC01869.jpg','08_8-DSC01921.jpg','09_9-DSC01924.jpg','10_10-DSC01938.jpg','11_11-DSC02100.jpg','12_12-DSC02104.jpg','13_13-DSC02466.jpg','14_14-DSC02473.jpg','15_15-DSC02571.jpg','16_16-DSC02602.jpg','17_17-DSC02879.jpg','18_18-DSC02893.jpg','19_19-DSC03162.jpg','20_20-DSC03166.jpg'].map(f=>'shoots/fashion/amsterdam/'+f)
+  },
+  {
+    title:'Courtside', cat:'Fashion', frames:10, sub:'SS25 · Tennis', year:'2025',
+    location:'Munich, DE',
+    hero:'shoots/fashion/court/05_5-DSC04378.jpg',
+    images:['01_1-DSC03791.jpg','02_2-DSC03795.jpg','03_3-DSC04060.jpg','04_4-DSC04099.jpg','05_5-DSC04378.jpg','06_6-DSC04425.jpg','07_7-DSC04432.jpg','08_8-DSC04491.jpg','09_9-DSC04549.jpg','10_10-DSC04601.jpg'].map(f=>'shoots/fashion/court/'+f)
+  },
+  {
+    title:'Runway', cat:'Fashion', frames:2, sub:'Milan Fashion Week', year:'2025',
+    location:'Milan, IT',
+    hero:'shoots/fashion/runway/01_1-DSC04885.jpg',
+    images:['01_1-DSC04885.jpg','02_2-DSC05005.jpg'].map(f=>'shoots/fashion/runway/'+f)
+  },
+  {
+    title:'Pelli Roju', cat:'Weddings', frames:31, sub:'Telugu Wedding', year:'2024',
+    location:'Visakhapatnam, IN',
+    hero:'shoots/weddings/pelli-roju/09_3-DSC00152.jpg',
+    images:['01_1-DSC00075.jpg','02_1-DSC00605.jpg','03_1-DSC02560.jpg','04_1-DSC04669.jpg','05_2-096A9595.jpg','06_2-DSC00147.jpg','07_2-DSC00643.jpg','08_2-DSC02564.jpg','09_3-DSC00152.jpg','10_3-DSC00248.jpg','11_3-DSC00945.jpg','12_3-DSC02565.jpg','13_4-DSC00297.jpg','14_4-DSC00458.jpg','15_4-DSC00948.jpg','16_4-DSC02566.jpg','17_5-DSC00571.jpg','18_5-DSC00741.jpg','19_5-DSC02568.jpg','20_6-096A8646.jpg','21_6-DSC00593.jpg','22_6-DSC00772.jpg','23_7-DSC00712.jpg','24_7-DSC00812.jpg','25_8-DSC00715.jpg','26_8-DSC00850.jpg','27_9-DSC00763.jpg','28_9-DSC01099.jpg','29_10-DSC00787.jpg','30_11-DSC00847.jpg','31_14-DSC07369.jpg'].map(f=>'shoots/weddings/pelli-roju/'+f)
+  },
+  {
+    title:'Portraits', cat:'Portraits', frames:46, sub:'Studio & Candid', year:'2024–25',
+    location:'Munich, DE',
+    hero:'shoots/portraits/studio/18_DSC00303.jpg',
+    subfolders: [
+      { title:'Studio · 20 frames', frames:20,
+        images:['01_DSC00006.jpg','02_DSC00021.jpg','03_DSC00105.jpg','04_DSC00148-3.jpg','05_DSC00151.jpg','06_DSC00158.jpg','07_DSC00159-2.jpg','08_DSC00197.jpg','09_DSC00210.jpg','10_DSC00218.jpg','11_DSC00228.jpg','12_DSC00240-Edit.jpg','13_DSC00274.jpg','14_DSC00286.jpg','15_DSC00294.jpg','16_DSC00297.jpg','17_DSC00302.jpg','18_DSC00303.jpg','19_DSC00310.jpg','20_DSC08656_14.35.26.jpg'].map(f=>'shoots/portraits/studio/'+f) },
+      { title:'Candid & Street · 26 frames', frames:26,
+        images:['01_DSC00006.jpg','02_DSC00021.jpg','03_DSC00037.jpg','04_DSC00060.jpg','05_DSC00078.jpg','06_DSC00084.jpg','07_DSC00105.jpg','08_DSC00119.jpg','09_DSC00127.jpg','10_DSC00158.jpg','11_DSC00189.jpg','12_DSC00198.jpg','13_DSC00218.jpg','14_DSC00228.jpg','15_DSC00274.jpg','16_DSC00286.jpg','17_DSC00294.jpg','18_DSC00297.jpg','19_DSC00299.jpg','20_DSC00302.jpg','21_DSC00303.jpg','22_DSC00310.jpg','23_DSC01686-Edit.jpg','24_DSC01715-Edit.jpg','25_DSC01819.jpg','26_DSC08656_14.35.26.jpg'].map(f=>'shoots/portraits/street/'+f) }
+    ]
+  },
+  {
+    title:'Wiesn', cat:'Events', frames:4, sub:'Oktoberfest', year:'2024',
+    location:'Munich, DE',
+    hero:'shoots/concerts/wiesn/02_2-A6500277.jpg',
+    images:['01_1-A6500067.jpg','02_2-A6500277.jpg','03_3-A6500298.jpg','04_4-A6500303.jpg'].map(f=>'shoots/concerts/wiesn/'+f)
+  }
+];
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+const params  = new URLSearchParams(window.location.search);
+const projIdx = parseInt(params.get('id') || '0', 10);
+const project = PROJECTS[Math.max(0, Math.min(projIdx, PROJECTS.length - 1))];
+
+// Update page title
+document.title = project.title + ' — VRASA by Sri Vrushank';
+
+// Hero
+document.getElementById('hero-img').src = project.hero;
+document.getElementById('hero-img').alt = project.title;
+document.getElementById('hero-eyebrow').textContent = project.cat.toUpperCase() + '  ·  ' + project.year;
+document.getElementById('hero-title').textContent = project.title;
+document.getElementById('hero-right').innerHTML =
+  '<div class="project-hero__meta-line">' + project.sub + '</div>' +
+  '<div class="project-hero__meta-line">' + project.location + '</div>';
+
+// Meta bar
+document.getElementById('meta-title').textContent = project.title + '.';
+document.getElementById('meta-cat').textContent = project.cat + ' · ' + project.year;
+document.getElementById('meta-frames').textContent = project.frames + ' frames';
+document.getElementById('footer-frames').textContent = project.frames + ' frames · ' + project.sub;
+
+// ── Subfolder tabs & grid ─────────────────────────────────────────────────────
+let activeSubIdx = 0;
+
+function currentImages() {
+  if (project.subfolders) return project.subfolders[activeSubIdx].images;
+  return project.images;
+}
+
+function buildGrid() {
+  const grid = document.getElementById('project-grid');
+  const imgs  = currentImages();
+  grid.innerHTML = '';
+  imgs.forEach((src, i) => {
+    const item = document.createElement('div');
+    item.className = 'project-grid__item';
+    item.innerHTML = '<img src="' + src + '" alt="' + project.title + ' ' + (i+1) + '" loading="' + (i < 6 ? 'eager' : 'lazy') + '">' +
+                     '<span class="project-grid__num">' + String(i+1).padStart(2,'0') + '</span>';
+    item.addEventListener('click', () => openLightbox(i));
+    grid.appendChild(item);
+  });
+}
+
+if (project.subfolders) {
+  const tabsEl = document.getElementById('project-tabs');
+  tabsEl.classList.add('has-tabs');
+  project.subfolders.forEach((sf, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'project-tab' + (i === 0 ? ' is-active' : '');
+    btn.textContent = sf.title;
+    btn.addEventListener('click', () => {
+      tabsEl.querySelectorAll('.project-tab').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      activeSubIdx = i;
+      buildGrid();
+    });
+    tabsEl.appendChild(btn);
+  });
+}
+
+buildGrid();
+
+// ── Lightbox ──────────────────────────────────────────────────────────────────
+let lbIdx = 0;
+const lightbox = document.getElementById('lightbox');
+const lbImg    = document.getElementById('lb-img');
+const lbCtr    = document.getElementById('lb-counter');
+
+function openLightbox(i) {
+  lbIdx = i;
+  const imgs = currentImages();
+  lbImg.src = imgs[i];
+  lbCtr.textContent = (i+1) + ' / ' + imgs.length;
+  lightbox.classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  lightbox.classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+function lbNav(dir) {
+  const imgs = currentImages();
+  lbIdx = (lbIdx + dir + imgs.length) % imgs.length;
+  lbImg.src = imgs[lbIdx];
+  lbCtr.textContent = (lbIdx+1) + ' / ' + imgs.length;
+}
+
+document.getElementById('lb-close').addEventListener('click', closeLightbox);
+document.getElementById('lb-prev').addEventListener('click', () => lbNav(-1));
+document.getElementById('lb-next').addEventListener('click', () => lbNav(+1));
+lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('is-open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft')  lbNav(-1);
+  if (e.key === 'ArrowRight') lbNav(+1);
+});
+
+// ── Nav scroll ───────────────────────────────────────────────────────────────
+const nav = document.getElementById('site-nav');
+function updateNav() { nav.classList.toggle('is-scrolled', window.scrollY > 80); }
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+
+// ── Page veil transition ──────────────────────────────────────────────────────
+const veil = document.getElementById('page-veil');
+veil.style.opacity = '1'; veil.style.transition = 'none';
+requestAnimationFrame(() => requestAnimationFrame(() => {
+  veil.style.transition = 'opacity .52s cubic-bezier(.4,0,.2,1)';
+  veil.style.opacity = '0';
+}));
+document.querySelectorAll('a[href]').forEach(a => {
+  const h = a.getAttribute('href');
+  if (!h || /^(#|https?:|mailto:|tel:|javascript)/.test(h)) return;
+  a.addEventListener('click', e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    veil.style.transition = 'opacity .38s cubic-bezier(.4,0,.2,1)';
+    veil.style.opacity = '1'; veil.style.pointerEvents = 'all';
+    setTimeout(() => { window.location.href = h; }, 400);
+  });
+});
+</script>
+</body>
+</html>

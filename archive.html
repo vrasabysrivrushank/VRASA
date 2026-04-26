@@ -693,10 +693,11 @@
     document.body.style.overflow = '';
   }
 
-  // Card click
+  // Card click — navigate to dedicated project page
   cards.forEach(card => {
-    card.addEventListener('click', () => openGallery(parseInt(card.dataset.project), 0));
-    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGallery(parseInt(card.dataset.project), 0); } });
+    const go = () => { window.location.href = 'project.html?id=' + card.dataset.project; };
+    card.addEventListener('click', go);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
   });
 
   galClose.addEventListener('click', closeGallery);
