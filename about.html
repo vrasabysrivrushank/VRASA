@@ -214,7 +214,7 @@
   <!-- Left: canvas -->
   <div class="decay-hero__canvas-wrap">
     <canvas id="decay-canvas" aria-hidden="true"></canvas>
-    <p class="decay-hero__eq-badge">Z&prime;(B&minus;L) &rarr; e&thinsp;&thinsp;+&thinsp;&thinsp;e&#8315; &ensp;&middot;&ensp; &radic;s &asymp; 91.2 GeV</p>
+    <p class="decay-hero__eq-badge">Z&prime;(B&minus;L) &rarr; e⁺e⁻ &ensp;&middot;&ensp; &mu;⁺&mu;⁻ &ensp;&middot;&ensp; hadrons &ensp;&middot;&ensp; &nu;&nu;&#773; &ensp;&mdash;&ensp; Model-Independent Dark Vector Physics</p>
   </div>
 
   <!-- Right: physics panel -->
@@ -299,7 +299,7 @@
   <a href="archive.html">↗ View Portfolio</a>
 </footer>
 
-<!-- ══ PARTICLE DECAY / LHC DETECTOR ANIMATION ══ -->
+<!-- ══ PARTICLE DECAY / LHC DETECTOR ANIMATION  (multi-channel) ══ -->
 <script>
 (function () {
 'use strict';
@@ -307,411 +307,445 @@
 const canvas = document.getElementById('decay-canvas');
 const ctx    = canvas.getContext('2d');
 let dpr = window.devicePixelRatio || 1;
-let W, H, vx, vy, R; // R = bending radius
+let W, H, vx, vy, R;
 
-/* ── Detector layer definitions (radii as fractions of H) ── */
-const PIPE_R  = 0.030;
-const DEG = Math.PI / 180;
+const DEG    = Math.PI / 180;
+const PIPE_R = 0.030;
 
+/* ── Detector geometry (radii as fractions of H) ── */
 const TRACKER_RINGS = [
-  { r_in: 0.042, r_out: 0.056 },
-  { r_in: 0.066, r_out: 0.080 },
-  { r_in: 0.092, r_out: 0.106 },
-  { r_in: 0.116, r_out: 0.130 },
-  { r_in: 0.142, r_out: 0.156 },
+  {r_in:0.042,r_out:0.056},{r_in:0.066,r_out:0.080},{r_in:0.092,r_out:0.106},
+  {r_in:0.116,r_out:0.130},{r_in:0.142,r_out:0.156},
 ];
-
 const CELL_LAYERS = [
-  {
-    name: 'ECAL', r_in: 0.172, r_out: 0.212, dphiDeg: 4,
-    bgColor: 'rgba(210,195,55,.07)', strokeColor: 'rgba(210,195,55,.16)',
-    hitPos: '#ff4820', hitNeg: '#2050ff', labelColor: '#c8b838'
-  },
-  {
-    name: 'HCAL', r_in: 0.228, r_out: 0.330, dphiDeg: 6,
-    bgColor: 'rgba(210,120,35,.06)', strokeColor: 'rgba(210,120,35,.13)',
-    hitPos: '#ff6820', hitNeg: '#2060f0', labelColor: '#c87830'
-  },
-  {
-    name: 'Muon', r_in: 0.368, r_out: 0.452, dphiDeg: 14,
-    bgColor: 'rgba(180,190,225,.05)', strokeColor: 'rgba(180,190,225,.11)',
-    hitPos: '#ffaa80', hitNeg: '#80aaff', labelColor: '#a0b0d0'
-  },
+  {name:'ECAL',r_in:0.172,r_out:0.212,dphiDeg:4,
+   bgColor:'rgba(210,195,55,.07)',strokeColor:'rgba(210,195,55,.16)',
+   hitPos:'#ff4820',hitNeg:'#2050ff'},
+  {name:'HCAL',r_in:0.228,r_out:0.330,dphiDeg:6,
+   bgColor:'rgba(210,120,35,.06)',strokeColor:'rgba(210,120,35,.13)',
+   hitPos:'#ff6820',hitNeg:'#2060f0'},
+  {name:'Muon',r_in:0.368,r_out:0.452,dphiDeg:14,
+   bgColor:'rgba(180,190,225,.05)',strokeColor:'rgba(180,190,225,.11)',
+   hitPos:'#ffaa80',hitNeg:'#80aaff'},
 ];
 
-/* ── Hit state (persistent across frames) ── */
-let hitState = { pos: {}, neg: {} }; // key = layerIndex, value = phi_hit (radians, angle from +x)
-let animPhase = 0; // 0=pre-boot 1=incoming 2=flash 3=decay 4=hold
+/* ── Hadronic daughter tracks ── */
+const HAD_TRACKS = [
+  {ang:-20*DEG,col:'#ffaa20',lbl:'π⁺',len:0.28},
+  {ang: 15*DEG,col:'#ff8010',lbl:'π⁻',len:0.24},
+  {ang:-38*DEG,col:'#ffcc44',lbl:'K⁰', len:0.21},
+  {ang: 30*DEG,col:'#ff6820',lbl:'π⁰', len:0.19},
+];
+
+/* ── Legend entries (all 4 channels, always shown) ── */
+const LEGEND = [
+  {col:'#ff5030', label:'π⁰ → γ + Z′  →  e⁺e⁻'},
+  {col:'#ff44cc', label:'η  → γ + Z′  →  μ⁺μ⁻'},
+  {col:'#ffaa30', label:'ρ/ω → π⁰ + Z′  →  had'},
+  {col:'#8899ff', label:'p + N → Z′  →  νν̄ (inv.)'},
+];
+
+/* ── Timing (single loop, all channels simultaneously) ── */
+const LOOP_DUR  = 13.0;
+const T_IN_END  = 1.6;
+const T_DK_END  = 5.5;
+const T_LEG_ST  = T_DK_END + 0.3;   /* legend fades in once tracks have settled */
+const T_EQ_ST   = T_DK_END + 1.1;   /* equations ~0.8 s after legend */
+
+/* ── Hit state (separate per channel) ── */
 let animStart = null;
-const LOOP = 11.0; // total loop duration in seconds
-// Timing (seconds within each loop)
-const T_IN_START  = 0.0;
-const T_IN_END    = 1.5;
-const T_FLASH_MID = 1.7;
-const T_DECAY_END = 4.5;
-const T_HOLD_END  = LOOP;
+let loopCount = -1;
+let hitState  = null;
+
+function resetHits() {
+  hitState = {
+    ee:  {pos:{}, neg:{}, posCol:'#ff4820', negCol:'#2050ff', scale:[1.0, 1.0, 0.0]},
+    mu:  {pos:{}, neg:{}, posCol:'#ff44cc', negCol:'#44ccff', scale:[0.2, 0.2, 1.0]},
+    had: {pos:{}, neg:{}, posCol:'#ffaa20', negCol:'#ff6820', scale:[1.0, 1.0, 0.0], _init:false},
+  };
+}
+
+/* ── Helpers ── */
+function ease(t)  { return t<0.5?2*t*t:-1+(4-2*t)*t; }
+function clamp(v,lo,hi) { return v<lo?lo:v>hi?hi:v; }
+function hexRgba(hex,a) {
+  return 'rgba('+parseInt(hex.slice(1,3),16)+','+parseInt(hex.slice(3,5),16)+','+parseInt(hex.slice(5,7),16)+','+a+')';
+}
+/* Parametric-R variants so each lepton channel can have its own bending radius */
+function thetaR(r,Rr)   { return 2*Math.asin(clamp(r/(2*Rr),0,1)); }
+function hitAngR(r,s,Rr){ return Math.atan2(s*(r*r)/(2*Rr), r*Math.sqrt(Math.max(0,1-Math.pow(r/(2*Rr),2)))); }
+function trkPosR(th,s,Rr){
+  const cy=vy+s*Rr, sa=s<0?Math.PI/2:-Math.PI/2;
+  return {x:vx+Rr*Math.cos(sa+s*th), y:cy+Rr*Math.sin(sa+s*th)};
+}
 
 /* ── Resize ── */
 function resize() {
-  const rect = canvas.getBoundingClientRect();
-  W = rect.width;  H = rect.height;
-  canvas.width  = Math.round(W * dpr);
-  canvas.height = Math.round(H * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  vx = W * 0.12;        // vertex x — near left edge of canvas
-  vy = H * 0.50;        // vertex y — vertical center
-  R  = H * 1.35;        // bending radius
+  const rect=canvas.getBoundingClientRect();
+  W=rect.width; H=rect.height;
+  canvas.width=Math.round(W*dpr); canvas.height=Math.round(H*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  vx=W*0.14; vy=H*0.50; R=H*1.35;
 }
-window.addEventListener('resize', () => { resize(); });
-// Defer first resize until canvas has layout dimensions
+window.addEventListener('resize',resize);
 requestAnimationFrame(resize);
 
-/* ── Helpers ── */
-function ease(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
-function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
-
-// Distance from vertex along the curved track (θ parameter)
-// d = 2R * sin(θ/2)  →  θ = 2*arcsin(d/(2R))
-function thetaForRadius(r) { return 2 * Math.asin(clamp(r / (2*R), 0, 1)); }
-
-// Hit angle from vertex at detector radius r (signed: positive = e⁻/down, negative = e⁺/up)
-// x_hit = vx + r*sqrt(1-(r/(2R))²)
-// y_offset = ±r²/(2R)  [+ for e⁻, - for e⁺]
-function hitAngle(r, sign) {
-  const yOff = sign * (r*r) / (2*R);
-  const xOff = r * Math.sqrt(Math.max(0, 1 - Math.pow(r/(2*R), 2)));
-  return Math.atan2(yOff, xOff);
-}
-
-// Track position at θ (screen coords: y positive downward)
-// e⁺ curves UP (y decreases), center at (vx, vy - R)
-// e⁻ curves DOWN (y increases), center at (vx, vy + R)
-function trackPos(theta, sign) {
-  // sign: -1 for e⁺ (up), +1 for e⁻ (down)
-  const cx = vx, cy = vy + sign * R;
-  const startAngle = (sign < 0) ? Math.PI/2 : -Math.PI/2;
-  const angle = startAngle - sign * theta;
-  return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) };
-}
-
-/* ── Draw detector cell (arc band) ── */
-function drawCell(r_in, r_out, phi1, phi2, fill, stroke) {
+/* ── Draw primitives ── */
+function drawCell(r_in,r_out,phi1,phi2,fill,stroke) {
   ctx.beginPath();
-  ctx.arc(vx, vy, r_out, phi1, phi2, false);
-  ctx.arc(vx, vy, r_in,  phi2, phi1, true);
+  ctx.arc(vx,vy,r_out,phi1,phi2,false); ctx.arc(vx,vy,r_in,phi2,phi1,true);
   ctx.closePath();
-  if (fill)   { ctx.fillStyle   = fill;   ctx.fill();   }
-  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 0.6; ctx.stroke(); }
+  if(fill){ctx.fillStyle=fill;ctx.fill();}
+  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=0.6;ctx.stroke();}
 }
-
-/* ── Draw full detector background ── */
-function drawDetector() {
-  // Grid of faint dots
-  ctx.fillStyle = 'rgba(244,241,234,0.03)';
-  for (let gx = 40; gx < W; gx += 50)
-    for (let gy = 20; gy < H; gy += 40) {
-      ctx.beginPath(); ctx.arc(gx, gy, 0.8, 0, Math.PI*2); ctx.fill();
-    }
-
-  // Beam pipe
-  ctx.beginPath();
-  ctx.arc(vx, vy, H * PIPE_R, -Math.PI, Math.PI);
-  ctx.strokeStyle = 'rgba(200,220,240,0.28)';
-  ctx.lineWidth   = 1.5;
-  ctx.stroke();
-
-  // Tracker rings
-  TRACKER_RINGS.forEach(({ r_in, r_out }) => {
-    // Draw the ring arc (only right half ±150° for visual)
-    const a0 = -150*DEG, a1 = 150*DEG;
-    ctx.beginPath();
-    ctx.arc(vx, vy, H * r_out, a0, a1);
-    ctx.strokeStyle = 'rgba(70,130,220,0.12)';
-    ctx.lineWidth   = H * (r_out - r_in) * 0.85;
-    ctx.stroke();
-  });
-
-  // Segmented ECAL / HCAL / Muon cells
-  const PHI_MAX = 100 * DEG; // draw cells over ±100°
-  CELL_LAYERS.forEach((layer) => {
-    const r_in  = H * layer.r_in;
-    const r_out = H * layer.r_out;
-    const dphi  = layer.dphiDeg * DEG;
-    for (let phi = -PHI_MAX; phi < PHI_MAX; phi += dphi) {
-      drawCell(r_in, r_out, phi, phi + dphi * 0.88, layer.bgColor, layer.strokeColor);
-    }
-  });
+function glowDot(x,y,r,col,blur,alpha) {
+  ctx.save();ctx.globalAlpha=alpha;ctx.shadowColor=col;ctx.shadowBlur=blur;
+  ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.restore();
 }
-
-/* ── Draw hit cells for a given layer and angle ── */
-function drawHitCell(layerIdx, phiHit, isPos, alpha) {
-  const layer  = CELL_LAYERS[layerIdx];
-  const r_in   = H * layer.r_in;
-  const r_out  = H * layer.r_out;
-  const dphi   = layer.dphiDeg * DEG;
-  const cellI  = Math.floor(phiHit / dphi);
-  const phi0   = cellI * dphi;
-  const col    = isPos ? layer.hitPos : layer.hitNeg;
-
-  // Glow effect: draw multiple times
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  // Outer glow
-  ctx.shadowColor = col;
-  ctx.shadowBlur  = 16;
-  drawCell(r_in, r_out, phi0, phi0 + dphi * 0.88, col, null);
-  ctx.shadowBlur  = 0;
-  ctx.restore();
-}
-
-/* ── Draw curved track arc ── */
-function drawTrack(thetaMax, sign, color, alpha, blur) {
-  if (thetaMax <= 0) return;
-  const cly   = vy + sign * R;
-  const start = (sign < 0) ?  Math.PI/2         : -Math.PI/2;
-  const end   = (sign < 0) ?  Math.PI/2 - thetaMax : -Math.PI/2 + thetaMax;
-  const acw   = (sign < 0); // anticlockwise for e⁺ (going up)
-
-  ctx.save();
-  ctx.globalAlpha  = alpha;
-  ctx.shadowColor  = color;
-  ctx.shadowBlur   = blur * 2;
-  ctx.strokeStyle  = color.replace(/[\d.]+\)$/, '0.25)');
-  ctx.lineWidth    = 6;
-  ctx.lineCap      = 'round';
-  ctx.beginPath();
-  ctx.arc(vx, cly, R, start, end, acw);
-  ctx.stroke();
-  ctx.shadowBlur   = blur;
-  ctx.strokeStyle  = color;
-  ctx.lineWidth    = 1.8;
-  ctx.beginPath();
-  ctx.arc(vx, cly, R, start, end, acw);
-  ctx.stroke();
-  ctx.restore();
-}
-
-/* ── Glow dot ── */
-function glowDot(x, y, r, col, blur, alpha) {
-  ctx.save();
-  ctx.globalAlpha  = alpha;
-  ctx.shadowColor  = col; ctx.shadowBlur = blur;
-  ctx.fillStyle    = col;
-  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
-  ctx.restore();
-}
-
-/* ── Glow line ── */
 function glowLine(x1,y1,x2,y2,col,lw,blur,alpha) {
-  ctx.save();
-  ctx.globalAlpha  = alpha;
-  ctx.shadowColor  = col; ctx.shadowBlur = blur;
-  ctx.strokeStyle  = col; ctx.lineWidth  = lw; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.save();ctx.globalAlpha=alpha;ctx.shadowColor=col;ctx.shadowBlur=blur;
+  ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.restore();
+}
+function monoText(text,x,y,col,alpha,size) {
+  ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=col;
+  ctx.font=(size||11)+'px "Space Mono",monospace';ctx.fillText(text,x,y);ctx.restore();
+}
+/* label with dark pill background — readable over any glow or detector cell */
+function labelText(text,x,y,col,alpha,size) {
+  if(alpha<=0) return;
+  const sz=size||12;
+  ctx.save();ctx.globalAlpha=alpha;
+  ctx.font='bold '+sz+'px "Space Mono",monospace';
+  const tw=ctx.measureText(text).width;
+  const px=4,py=3,r=3;
+  const bx=x-px, by=y-sz-1, bw=tw+px*2, bh=sz+py*2+1;
+  /* dark pill */
+  ctx.fillStyle='rgba(2,2,10,0.88)';
+  ctx.beginPath();ctx.moveTo(bx+r,by);ctx.lineTo(bx+bw-r,by);
+  ctx.quadraticCurveTo(bx+bw,by,bx+bw,by+r);
+  ctx.lineTo(bx+bw,by+bh-r);ctx.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);
+  ctx.lineTo(bx+r,by+bh);ctx.quadraticCurveTo(bx,by+bh,bx,by+bh-r);
+  ctx.lineTo(bx,by+r);ctx.quadraticCurveTo(bx,by,bx+r,by);ctx.closePath();
+  ctx.fill();
+  /* text */
+  ctx.fillStyle=col;ctx.fillText(text,x,y+py);
+  ctx.restore();
+}
+function rrect(x,y,w,h,r) {
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+
+/* ── Detector structure ── */
+function drawDetector() {
+  ctx.fillStyle='rgba(244,241,234,0.03)';
+  for(let gx=40;gx<W;gx+=50) for(let gy=20;gy<H;gy+=40){ctx.beginPath();ctx.arc(gx,gy,0.8,0,Math.PI*2);ctx.fill();}
+  ctx.beginPath();ctx.arc(vx,vy,H*PIPE_R,-Math.PI,Math.PI);
+  ctx.strokeStyle='rgba(200,220,240,0.28)';ctx.lineWidth=1.5;ctx.stroke();
+  TRACKER_RINGS.forEach(({r_in,r_out})=>{
+    ctx.beginPath();ctx.arc(vx,vy,H*r_out,-150*DEG,150*DEG);
+    ctx.strokeStyle='rgba(70,130,220,0.12)';ctx.lineWidth=H*(r_out-r_in)*0.85;ctx.stroke();
+  });
+  const PM=100*DEG;
+  CELL_LAYERS.forEach(l=>{
+    const ri=H*l.r_in,ro=H*l.r_out,dp=l.dphiDeg*DEG;
+    for(let p=-PM;p<PM;p+=dp) drawCell(ri,ro,p,p+dp*0.88,l.bgColor,l.strokeColor);
+  });
+}
+function drawDetectorLabels() {
+  [{n:'Tracker',r:H*0.100,c:'rgba(70,130,220,0.45)'},{n:'ECAL',r:H*0.192,c:'rgba(210,195,55,0.45)'},
+   {n:'HCAL',  r:H*0.280,c:'rgba(210,120,35,0.45)'},{n:'Muon',r:H*0.410,c:'rgba(180,190,225,0.45)'}]
+  .forEach(({n,r,c})=>{
+    const la=-62*DEG,lx=vx+r*Math.cos(la)+6,ly=vy+r*Math.sin(la)-5;
+    if(lx>10&&ly>10&&lx<W-10&&ly<H-10){ctx.save();ctx.fillStyle=c;ctx.font='9px "Space Mono",monospace';ctx.fillText(n,lx,ly);ctx.restore();}
+  });
+  monoText('LHC · CERN · CMS',vx+H*0.48,32,'rgba(244,241,234,0.13)',1,9);
+  monoText('B = 3.8 T',       vx+H*0.48,46,'rgba(244,241,234,0.10)',1,9);
+}
+
+/* ── Legend — all channels, lowered to clear nav bar ── */
+function drawLegend(alpha) {
+  if(alpha<=0) return;
+  const lx=W*0.625, ly=H*0.120;   /* ← lowered from 0.030 */
+  const lw=W-lx-10, rowH=H*0.058, totalH=rowH*4+28;
+  ctx.save(); ctx.globalAlpha=alpha;
+  rrect(lx,ly,lw,totalH,4);
+  ctx.fillStyle='rgba(2,2,10,0.88)';ctx.fill();
+  ctx.strokeStyle='rgba(244,241,234,0.09)';ctx.lineWidth=0.7;ctx.stroke();
+  ctx.fillStyle='rgba(244,241,234,0.32)';ctx.font='7.5px "Space Mono",monospace';
+  ctx.fillText('DECAY  CHANNELS',lx+10,ly+13);
+  ctx.beginPath();ctx.moveTo(lx+8,ly+17);ctx.lineTo(lx+lw-8,ly+17);
+  ctx.strokeStyle='rgba(244,241,234,0.07)';ctx.lineWidth=0.5;ctx.stroke();
+  LEGEND.forEach((ch,i)=>{
+    const ry=ly+20+i*rowH;
+    rrect(lx+4,ry+1,lw-8,rowH-3,2);
+    ctx.fillStyle='rgba(244,241,234,0.05)';ctx.fill();
+    ctx.fillStyle=ch.col;ctx.fillRect(lx+4,ry+1,2.5,rowH-3);
+    ctx.beginPath();ctx.arc(lx+14,ry+rowH*0.45,3.5,0,Math.PI*2);
+    ctx.fillStyle=ch.col;ctx.fill();
+    ctx.fillStyle='rgba(244,241,234,0.86)';ctx.font='8px "Space Mono",monospace';
+    ctx.fillText(ch.label,lx+23,ry+rowH*0.52);
+  });
   ctx.restore();
 }
 
-/* ── Mono label ── */
-function monoLabel(text, x, y, col, alpha, size) {
-  size = size || 11;
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.fillStyle   = col;
-  ctx.font        = size + 'px "Space Mono",monospace';
-  ctx.fillText(text, x, y);
-  ctx.restore();
-}
-
-/* ── LHC detector outer labels ── */
-function drawLabels() {
-  const labels = [
-    { name: 'Tracker', r: H * 0.100, color: 'rgba(70,130,220,0.45)' },
-    { name: 'ECAL',    r: H * 0.192, color: 'rgba(210,195,55,0.45)' },
-    { name: 'HCAL',    r: H * 0.280, color: 'rgba(210,120,35,0.45)' },
-    { name: 'Muon',    r: H * 0.410, color: 'rgba(180,190,225,0.45)' },
+/* ── Equations — complete scientific text, fade in (no typewriter) ── */
+function drawEquations(alpha) {
+  if(alpha<=0) return;
+  const ex=W*0.625, ey=H*0.700;
+  const ew=W-ex-10, eh=H*0.168;
+  ctx.save(); ctx.globalAlpha=alpha;
+  rrect(ex,ey,ew,eh,4);
+  ctx.fillStyle='rgba(2,2,10,0.88)';ctx.fill();
+  ctx.strokeStyle='rgba(244,241,234,0.07)';ctx.lineWidth=0.7;ctx.stroke();
+  /* header */
+  ctx.fillStyle='rgba(244,241,234,0.30)';ctx.font='7.5px "Space Mono",monospace';
+  ctx.fillText('DARK VECTOR PHYSICS  ·  THESIS',ex+10,ey+13);
+  ctx.beginPath();ctx.moveTo(ex+8,ey+17);ctx.lineTo(ex+ew-8,ey+17);
+  ctx.strokeStyle='rgba(244,241,234,0.06)';ctx.lineWidth=0.5;ctx.stroke();
+  /* equations */
+  const S = [
+    {t:'kinetic mixing:',                      c:'rgba(244,241,234,0.34)', y:ey+29, sz:7.5},
+    {t:'ℒ ⊃  −(ε/2) · F′_μν F^μν',           c:'rgba(244,241,234,0.90)', y:ey+41, sz:9  },
+    {t:'partial widths:',                      c:'rgba(244,241,234,0.34)', y:ey+57, sz:7.5},
+    {t:'Γ(Z′→ℓ⁺ℓ⁻) = g²_BL mZ′ / 12π',      c:'rgba(244,241,234,0.90)', y:ey+69, sz:9  },
+    {t:'Γ_had = g²_BL R(s) mZ′ / 12π',        c:'rgba(244,241,234,0.72)', y:ey+82, sz:9  },
+    {t:'signal sensitivity:',                  c:'rgba(244,241,234,0.34)', y:ey+98, sz:7.5},
+    {t:'N_sig = N_prod · ε_det · BR_vis',      c:'rgba(244,241,234,0.90)', y:ey+110,sz:9  },
   ];
-  const labelAngle = -62 * DEG; // upper-right direction
-  labels.forEach(({ name, r, color }) => {
-    const lx = vx + r * Math.cos(labelAngle) + 6;
-    const ly = vy + r * Math.sin(labelAngle) - 5;
-    if (lx > 10 && ly > 10 && lx < W - 10 && ly < H - 10) {
-      ctx.save();
-      ctx.fillStyle = color;
-      ctx.font = '9px "Space Mono",monospace';
-      ctx.fillText(name, lx, ly);
-      ctx.restore();
+  S.forEach(l=>{ctx.fillStyle=l.c;ctx.font=l.sz+'px "Space Mono",monospace';ctx.fillText(l.t,ex+10,l.y);});
+  ctx.restore();
+}
+
+/* ── Lepton curved track with channel-specific bending radius ── */
+function drawLeptonTrack(thetaMax,sign,col,alpha,blur,Rr) {
+  if(thetaMax<=0) return;
+  const cy=vy+sign*Rr, sa=sign<0?Math.PI/2:-Math.PI/2;
+  const ea=sign<0?Math.PI/2-thetaMax:-Math.PI/2+thetaMax;
+  ctx.save(); ctx.globalAlpha=alpha;
+  ctx.shadowColor=col; ctx.shadowBlur=blur*1.2;
+  ctx.strokeStyle=hexRgba(col,0.10); ctx.lineWidth=5; ctx.lineCap='round';
+  ctx.beginPath(); ctx.arc(vx,cy,Rr,sa,ea,sign<0); ctx.stroke();
+  ctx.shadowBlur=blur*0.6; ctx.strokeStyle=col; ctx.lineWidth=1.8;
+  ctx.beginPath(); ctx.arc(vx,cy,Rr,sa,ea,sign<0); ctx.stroke();
+  ctx.restore();
+}
+
+/* ── Hadronic spray ── */
+function drawHadronicTracks(prog,alpha) {
+  HAD_TRACKS.forEach(ht=>{
+    const len=H*ht.len*Math.min(prog*1.6,1.0);
+    const x2=vx+len*Math.cos(ht.ang), y2=vy+len*Math.sin(ht.ang);
+    glowLine(vx,vy,x2,y2,ht.col,4,14,alpha*0.10);
+    glowLine(vx,vy,x2,y2,ht.col,1.4,5,alpha*0.80);
+    if(prog>0.5){
+      /* push label 18px further along track direction, clear of the cell glow */
+      const lx=vx+(len+18)*Math.cos(ht.ang), ly=vy+(len+18)*Math.sin(ht.ang);
+      labelText(ht.lbl,lx+4,ly+4,'#8899ff',clamp((prog-0.5)/0.3,0,1)*alpha,12);
     }
   });
-
-  // CERN / LHC annotation (top-left)
-  monoLabel('LHC · CERN · CMS Detector', vx + H*0.48, 32, 'rgba(244,241,234,0.13)', 1, 9);
-  monoLabel('B field: 3.8 T', vx + H*0.48, 46, 'rgba(244,241,234,0.10)', 1, 9);
+}
+function drawPi0Recoil(prog,alpha) {
+  const ang=168*DEG, len=H*0.17*Math.min(prog*1.6,1.0);
+  glowLine(vx,vy,vx+len*Math.cos(ang),vy+len*Math.sin(ang),'#c8c870',3,12,alpha*0.6);
+  if(prog>0.5){labelText('π⁰',vx+len*Math.cos(ang)-18,vy+len*Math.sin(ang)-4,'#aa66ff',clamp((prog-0.5)/0.3,0,1)*alpha,12);}
 }
 
-/* ── Main draw frame ── */
-function draw(t) {
-  // loop progress
-  const lt = t % LOOP;
+/* ── Gamma ray (angle-parameterised) ── */
+function drawGamma(prog,alpha,ang) {
+  const len=H*0.21*Math.min(prog*1.6,1.0);
+  const x2=vx+len*Math.cos(ang), y2=vy+len*Math.sin(ang);
+  ctx.save(); ctx.globalAlpha=alpha*0.72; ctx.setLineDash([5,4]);
+  ctx.strokeStyle='#ffffaa'; ctx.lineWidth=1.2; ctx.shadowColor='#ffffcc'; ctx.shadowBlur=10;
+  ctx.beginPath(); ctx.moveTo(vx,vy); ctx.lineTo(x2,y2); ctx.stroke(); ctx.restore();
+  if(prog>0.5){labelText('γ',x2-8,y2-6,'#cc77ff',clamp((prog-0.5)/0.3,0,1)*alpha,12);}
+}
 
-  // Reset hits on loop restart
-  if (lt < 0.05 && t > 0.1) {
-    hitState = { pos: {}, neg: {} };
-  }
-
-  ctx.clearRect(0, 0, W, H);
-
-  // Background
-  ctx.fillStyle = '#02020a';
-  ctx.fillRect(0, 0, W, H);
-
-  // Detector static structure
-  drawDetector();
-  drawLabels();
-
-  /* ── Incoming Z' beam (0 → T_IN_END, persistent after) ── */
-  const inP   = clamp((lt - T_IN_START) / (T_IN_END - T_IN_START), 0, 1);
-  const beamX = vx * 0.15 + (vx - vx * 0.15) * ease(inP);
-  const beamAlpha = lt < T_IN_END ? ease(inP) : 1.0;
-
-  if (lt > T_IN_START) {
-    // Track line
-    glowLine(W * 0.01, vy, lt < T_IN_END ? beamX : vx, vy, 'rgba(212,168,64,0.40)', 5, 20, beamAlpha * 0.85);
-    glowLine(W * 0.01, vy, lt < T_IN_END ? beamX : vx, vy, 'rgba(240,200,80,0.95)', 1.6, 6, beamAlpha);
-    // Moving head
-    if (lt < T_IN_END) {
-      glowDot(beamX, vy, 5, '#f5d060', 24, beamAlpha);
-    }
-    // Label
-    const lAlpha = clamp((lt - 0.3) / 0.5, 0, 1) * beamAlpha;
-    monoLabel("Z′", W * 0.01 + 6, vy - 16, '#d4a840', lAlpha * 0.88, 11);
-    monoLabel("B−L Boson", W * 0.01 + 22, vy - 16, 'rgba(212,168,64,.55)', lAlpha * 0.75, 9);
-  }
-
-  /* ── Vertex flash ── */
-  if (lt > T_IN_END - 0.2 && lt < T_IN_END + 0.7) {
-    const ft  = (lt - (T_IN_END - 0.2)) / 0.9;
-    const fa  = ft < 0.4 ? ft / 0.4 : 1 - (ft - 0.4) / 0.6;
-    ctx.save();
-    ctx.globalAlpha = fa * 0.72;
-    const grad = ctx.createRadialGradient(vx,vy,0, vx,vy,50*Math.min(ft*2,1));
-    grad.addColorStop(0, 'rgba(255,255,255,1)');
-    grad.addColorStop(0.3,'rgba(200,160,255,0.55)');
-    grad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = grad;
-    ctx.beginPath(); ctx.arc(vx,vy,50,0,Math.PI*2); ctx.fill();
+/* ── Invisible / missing-ET tracks — labels at track ends ── */
+function drawInvisibleTracks(prog,alpha) {
+  const INVLBLS = ['ν̄','ν'];
+  [-10*DEG,10*DEG].forEach((ang,idx)=>{
+    const len=H*0.25*Math.min(prog*1.6,1.0);
+    const ex2=vx+len*Math.cos(ang), ey2=vy+len*Math.sin(ang);
+    ctx.save(); ctx.globalAlpha=alpha*0.50; ctx.setLineDash([7,7]); ctx.lineDashOffset=-prog*26;
+    ctx.strokeStyle='#8899ff'; ctx.lineWidth=1.5; ctx.shadowColor='#8899ff'; ctx.shadowBlur=10;
+    ctx.beginPath(); ctx.moveTo(vx,vy); ctx.lineTo(ex2,ey2); ctx.stroke();
     ctx.restore();
-  }
-
-  /* ── Vertex dot (permanent once decay starts) ── */
-  if (lt > T_IN_END) {
-    const va = clamp((lt - T_IN_END) / 0.3, 0, 1);
-    glowDot(vx, vy, 4, '#ffffff', 14, va);
-  }
-
-  /* ── Decay tracks ── */
-  if (lt > T_IN_END + 0.1) {
-    const decayP  = clamp((lt - (T_IN_END + 0.1)) / (T_DECAY_END - T_IN_END - 0.1), 0, 1);
-    // θ at current track extension
-    const maxR    = H * CELL_LAYERS[2].r_out * 1.05; // just past muon
-    const maxTheta = thetaForRadius(maxR);
-    const theta   = maxTheta * ease(decayP);
-
-    // Draw e⁺ (up, red, sign = -1)
-    drawTrack(theta, -1, '#ff5030', 1.0, 10);
-    // Draw e⁻ (down, blue, sign = +1)
-    drawTrack(theta, +1, '#3060ff', 1.0, 10);
-
-    // Track head dots
-    if (decayP < 0.98) {
-      const posEnd = trackPos(theta, -1);
-      const negEnd = trackPos(theta, +1);
-      glowDot(posEnd.x, posEnd.y, 4.5, '#ff5030', 18, 1.0);
-      glowDot(negEnd.x, negEnd.y, 4.5, '#3060ff', 18, 1.0);
+    if(prog>0.5){
+      const pa=clamp((prog-0.5)/0.3,0,1)*alpha;
+      labelText(INVLBLS[idx], ex2+5, ey2+(idx===0?-5:13), '#ffcc33', pa, 12);
     }
+  });
+  if(prog>0.5){
+    const pa=clamp((prog-0.5)/0.3,0,1)*alpha;
+    monoText('⊘  inv.',vx+H*0.04,vy+30,'rgba(136,153,255,0.55)',pa*0.75,9);
+  }
+}
 
-    // Particle labels (near tips, appear after 40% travel)
-    if (decayP > 0.4) {
-      const la = clamp((decayP - 0.4) / 0.25, 0, 1);
-      const pe = trackPos(theta * 0.82, -1);
-      const ne = trackPos(theta * 0.82, +1);
-      monoLabel('e⁺', pe.x + 8, pe.y - 8, '#ff7050', la * 0.92, 11);
-      monoLabel('e⁻', ne.x + 8, ne.y + 18, '#5080ff', la * 0.92, 11);
-    }
-
-    // Check detector layer hits
-    CELL_LAYERS.forEach((layer, i) => {
-      const layerR     = H * (layer.r_in + layer.r_out) / 2;
-      const thetaHit   = thetaForRadius(layerR);
-      if (theta >= thetaHit) {
-        // Compute hit angle
-        if (hitState.pos[i] === undefined) {
-          hitState.pos[i] = hitAngle(layerR, -1); // e⁺ (sign=-1 → y goes up → negative phi)
+/* ── Persistent hit cells for all channels ── */
+function drawAllHitCells() {
+  Object.values(hitState).forEach(hs=>{
+    CELL_LAYERS.forEach((l,i)=>{
+      const sc=(hs.scale&&hs.scale[i]!==undefined)?hs.scale[i]:1;
+      if(sc===0) return;
+      const ri=H*l.r_in,ro=H*l.r_out,dp=l.dphiDeg*DEG;
+      ['pos','neg'].forEach(k=>{
+        if(hs[k]&&hs[k][i]!==undefined){
+          const phi=hs[k][i], col=hs[k+'Col'];
+          [-1,0,1].forEach(dc=>{
+            const p0=Math.floor(phi/dp)*dp+dc*dp;
+            ctx.save(); ctx.globalAlpha=(dc===0?0.45:0.14)*sc;
+            ctx.shadowColor=col; ctx.shadowBlur=10;
+            drawCell(ri,ro,p0,p0+dp*0.88,col,null); ctx.restore();
+          });
         }
-        if (hitState.neg[i] === undefined) {
-          hitState.neg[i] = hitAngle(layerR, +1); // e⁻ (sign=+1 → y goes down → positive phi)
+      });
+    });
+  });
+}
+
+/* ── Main draw — all channels fire simultaneously ── */
+function draw(globalT) {
+  const lt=globalT%LOOP_DUR;
+  const lc=Math.floor(globalT/LOOP_DUR);
+  if(lc!==loopCount){ loopCount=lc; resetHits(); }
+
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#02020a'; ctx.fillRect(0,0,W,H);
+  drawDetector();
+  drawDetectorLabels();
+
+  /* — Incoming Z′ beam — */
+  const inP=clamp(lt/T_IN_END,0,1);
+  const bx=lt<T_IN_END?W*0.01+(vx-W*0.01)*ease(inP):vx;
+  const ba=lt<T_IN_END?ease(inP):1.0;
+  if(lt>0){
+    glowLine(W*0.01,vy,bx,vy,'#d4a840',5,22,ba*0.75);
+    glowLine(W*0.01,vy,bx,vy,'#d4a840',1.6,7,ba);
+    if(lt<T_IN_END) glowDot(bx,vy,5,'#d4a840',26,ba);
+    const la=clamp((lt-0.3)/0.5,0,1)*ba;
+    monoText('Z′  (B−L)',W*0.01+6,vy-16,'#d4a840',la*0.88,11);
+  }
+
+  /* — Vertex flash — */
+  if(lt>T_IN_END-0.2&&lt<T_IN_END+0.8){
+    const ft=(lt-(T_IN_END-0.2))/1.0, fa=ft<0.4?ft/0.4:1-(ft-0.4)/0.6;
+    ctx.save(); ctx.globalAlpha=fa*0.72;
+    const g=ctx.createRadialGradient(vx,vy,0,vx,vy,62*Math.min(ft*2,1));
+    g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(0.3,'rgba(200,160,255,0.55)');g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(vx,vy,62,0,Math.PI*2); ctx.fill(); ctx.restore();
+  }
+  if(lt>T_IN_END){ glowDot(vx,vy,4,'#ffffff',14,clamp((lt-T_IN_END)/0.3,0,1)); }
+
+  /* ════ ALL FOUR DECAY CHANNELS SIMULTANEOUSLY ════ */
+  if(lt>T_IN_END+0.1){
+    const decayP=clamp((lt-(T_IN_END+0.1))/(T_DK_END-T_IN_END-0.1),0,1);
+    const eased=ease(decayP);
+    const inHold=lt>T_DK_END;
+    const pulse=inHold?0.85+0.15*Math.sin((lt-T_DK_END)*1.4):1.0;
+    const prog=inHold?1.0:eased;
+    const ta=inHold?pulse:1.0;
+
+    /* ── e⁺e⁻  (R_e = H×1.1, stops at HCAL) ── */
+    {
+      const Re=H*1.1;
+      const maxTh=thetaR(H*CELL_LAYERS[1].r_out*1.05, Re);
+      const theta=inHold?maxTh:maxTh*eased;
+      drawLeptonTrack(theta,-1,'#ff5030',ta,10,Re);
+      drawLeptonTrack(theta,+1,'#3060ff',ta,10,Re);
+      if(!inHold&&decayP<0.98){
+        const p=trkPosR(theta,-1,Re), n=trkPosR(theta,+1,Re);
+        glowDot(p.x,p.y,4,'#ff5030',16,1); glowDot(n.x,n.y,4,'#3060ff',16,1);
+      }
+      if(decayP>0.4||inHold){
+        const la=inHold?1:clamp((decayP-0.4)/0.25,0,1);
+        const th2=(inHold?maxTh:theta)*0.80;
+        const p=trkPosR(th2,-1,Re), n=trkPosR(th2,+1,Re);
+        labelText('e⁺',p.x+7,p.y-7, '#00f0d8',la*ta,12);
+        labelText('e⁻',n.x+7,n.y+17,'#f0cc00',la*ta,12);
+      }
+      drawGamma(inHold?1:eased,ta,-55*DEG);
+      /* register ECAL + HCAL hits */
+      for(let i=0;i<=1;i++){
+        const lr=H*(CELL_LAYERS[i].r_in+CELL_LAYERS[i].r_out)/2;
+        if(theta>=thetaR(lr,Re)){
+          if(hitState.ee.pos[i]===undefined) hitState.ee.pos[i]=hitAngR(lr,-1,Re);
+          if(hitState.ee.neg[i]===undefined) hitState.ee.neg[i]=hitAngR(lr,+1,Re);
         }
       }
-    });
-  }
+    }
 
-  /* ── Persistent hit cells (remain lit forever once triggered) ── */
-  CELL_LAYERS.forEach((layer, i) => {
-    const r_in  = H * layer.r_in;
-    const r_out = H * layer.r_out;
-    const dphi  = layer.dphiDeg * DEG;
+    /* ── μ⁺μ⁻  (R_μ = H×1.7, penetrates to Muon chamber) ── */
+    {
+      const Rm=H*1.7;
+      const maxTh=thetaR(H*CELL_LAYERS[2].r_out*1.05, Rm);
+      const theta=inHold?maxTh:maxTh*eased;
+      drawLeptonTrack(theta,-1,'#ff44cc',ta,10,Rm);
+      drawLeptonTrack(theta,+1,'#44ccff',ta,10,Rm);
+      if(!inHold&&decayP<0.98){
+        const p=trkPosR(theta,-1,Rm), n=trkPosR(theta,+1,Rm);
+        glowDot(p.x,p.y,4,'#ff44cc',16,1); glowDot(n.x,n.y,4,'#44ccff',16,1);
+      }
+      if(decayP>0.4||inHold){
+        const la=inHold?1:clamp((decayP-0.4)/0.25,0,1);
+        /* labels pinned to the actual track tip, not 80% */
+        const thEnd=inHold?maxTh:theta;
+        const p=trkPosR(thEnd,-1,Rm), n=trkPosR(thEnd,+1,Rm);
+        labelText('μ⁺',p.x+6,p.y-7, '#88ff44',la*ta,12);
+        labelText('μ⁻',n.x+6,n.y+15,'#ff8800',la*ta,12);
+      }
+      drawGamma(inHold?1:eased,ta,-43*DEG);
+      /* register ECAL(faint) + HCAL(faint) + Muon(bright) */
+      for(let i=0;i<=2;i++){
+        const lr=H*(CELL_LAYERS[i].r_in+CELL_LAYERS[i].r_out)/2;
+        if(theta>=thetaR(lr,Rm)){
+          if(hitState.mu.pos[i]===undefined) hitState.mu.pos[i]=hitAngR(lr,-1,Rm);
+          if(hitState.mu.neg[i]===undefined) hitState.mu.neg[i]=hitAngR(lr,+1,Rm);
+        }
+      }
+    }
 
-    if (hitState.pos[i] !== undefined) {
-      // Also draw a couple of adjacent cells with diminishing alpha (shower spread)
-      [-1, 0, 1].forEach(dCell => {
-        const phi0 = Math.floor(hitState.pos[i] / dphi) * dphi + dCell * dphi;
-        const alpha = dCell === 0 ? 1.0 : 0.35;
-        ctx.save(); ctx.globalAlpha = alpha;
-        ctx.shadowColor = layer.hitPos; ctx.shadowBlur = 18;
-        drawCell(r_in, r_out, phi0, phi0 + dphi*0.88, layer.hitPos, null);
-        ctx.restore();
+    /* ── Hadronic spray  (ρ/ω → π⁰ + Z′ → had) ── */
+    drawHadronicTracks(prog,ta);
+    drawPi0Recoil(prog,ta);
+    if((eased>0.5||inHold)&&!hitState.had._init){
+      hitState.had._init=true;
+      [0,1].forEach(i=>{
+        hitState.had.pos[i]=HAD_TRACKS[0].ang;
+        hitState.had.neg[i]=HAD_TRACKS[1].ang;
       });
     }
-    if (hitState.neg[i] !== undefined) {
-      [-1, 0, 1].forEach(dCell => {
-        const phi0 = Math.floor(hitState.neg[i] / dphi) * dphi + dCell * dphi;
-        const alpha = dCell === 0 ? 1.0 : 0.35;
-        ctx.save(); ctx.globalAlpha = alpha;
-        ctx.shadowColor = layer.hitNeg; ctx.shadowBlur = 18;
-        drawCell(r_in, r_out, phi0, phi0 + dphi*0.88, layer.hitNeg, null);
-        ctx.restore();
-      });
-    }
-  });
 
-  /* ── Hold phase: slow pulse on tracks ── */
-  if (lt > T_DECAY_END) {
-    const holdT  = lt - T_DECAY_END;
-    const pulse  = 0.85 + 0.15 * Math.sin(holdT * 1.4);
-    const maxR   = H * CELL_LAYERS[2].r_out * 1.05;
-    const maxTheta = thetaForRadius(maxR);
-    drawTrack(maxTheta, -1, '#ff5030', pulse, 8);
-    drawTrack(maxTheta, +1, '#3060ff', pulse, 8);
-    // Track tip labels persist
-    const pe = trackPos(maxTheta * 0.82, -1);
-    const ne = trackPos(maxTheta * 0.82, +1);
-    monoLabel('e⁺', pe.x + 8, pe.y - 8, '#ff7050', 0.88, 11);
-    monoLabel('e⁻', ne.x + 8, ne.y + 18, '#5080ff', 0.88, 11);
+    /* ── Invisible  (p+N → Z′ → νν̄) ── */
+    drawInvisibleTracks(prog,ta);
   }
 
-  /* ── Fade out at loop end ── */
-  if (lt > LOOP - 1.2) {
-    const fadeAlpha = clamp((lt - (LOOP - 1.2)) / 1.2, 0, 1);
-    ctx.fillStyle = `rgba(2,2,10,${ease(fadeAlpha)})`;
-    ctx.fillRect(0, 0, W, H);
+  /* — Persistent hit cells (all channels) — */
+  drawAllHitCells();
+
+  /* — Legend — appears after animation finishes — */
+  drawLegend(clamp((lt-T_LEG_ST)/0.8,0,1));
+
+  /* — Equations — follow legend ~0.8 s later — */
+  if(lt>T_EQ_ST) drawEquations(clamp((lt-T_EQ_ST)/0.9,0,1));
+
+  /* — Fade at loop end — */
+  if(lt>LOOP_DUR-1.4){
+    ctx.fillStyle='rgba(2,2,10,'+ease(clamp((lt-(LOOP_DUR-1.4))/1.4,0,1))+')';
+    ctx.fillRect(0,0,W,H);
   }
 }
 
-/* ── Animation loop ── */
+/* ── Animation loop — 1.2× speed ── */
 function tick(ts) {
-  if (!animStart) animStart = ts;
-  draw((ts - animStart) / 1000);
+  if(!animStart) animStart=ts;
+  draw((ts-animStart)/1000 * 1.2);
   requestAnimationFrame(tick);
 }
+resetHits();
 requestAnimationFrame(tick);
 
 })();
