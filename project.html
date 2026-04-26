@@ -146,39 +146,18 @@
     .back-fixed:hover { color: var(--fg); border-color: rgba(244,241,234,.5); background: rgba(10,10,10,.80); }
     @media (max-width: 860px) { .back-fixed { top: 70px; right: 20px; } }
 
-    /* ── SUBFOLDER TABS ── */
-    .project-tabs {
-      display: none; gap: 0;
-      border-bottom: 1px solid var(--border);
-      padding: 0 52px;
-    }
-    .project-tabs.has-tabs { display: flex; }
-    .project-tab {
-      font-family: var(--mono); font-size: 10px; letter-spacing: .18em;
-      text-transform: uppercase; color: var(--muted);
-      padding: 14px 20px; cursor: pointer;
-      border-bottom: 1px solid transparent; margin-bottom: -1px;
-      transition: color .2s;
-    }
-    .project-tab:hover { color: var(--fg); }
-    .project-tab.is-active { color: var(--fg); border-bottom-color: var(--fg); }
-
     /* ── PHOTO GRID ── */
     .project-grid {
-      padding: 6px;
+      padding: 4px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 4px;
     }
     .project-grid__item {
       position: relative; overflow: hidden;
-      aspect-ratio: 2/3;
+      aspect-ratio: 3/4;
       background: #111;
       cursor: pointer;
-    }
-    .project-grid__item:first-child {
-      grid-column: span 3;
-      aspect-ratio: 16/7;
     }
     .project-grid__item img {
       width: 100%; height: 100%;
@@ -253,7 +232,6 @@
       .project-meta-bar__right { flex-wrap: wrap; gap: 20px; }
       .project-tabs { padding: 0 28px; }
       .project-grid { grid-template-columns: repeat(2, 1fr); padding: 4px; }
-      .project-grid__item:first-child { grid-column: span 2; aspect-ratio: 3/2; }
       .project-footer { padding: 20px 28px; flex-wrap: wrap; gap: 12px; }
     }
   </style>
@@ -317,9 +295,6 @@
     <a href="archive.html" class="back-link">← All Projects</a>
   </div>
 </div>
-
-<!-- SUBFOLDER TABS -->
-<div class="project-tabs" id="project-tabs"></div>
 
 <!-- PHOTO GRID -->
 <main class="project-grid" id="project-grid" aria-label="Project photos"></main>
@@ -422,42 +397,21 @@ document.getElementById('meta-cat').textContent = project.cat + ' · ' + project
 document.getElementById('meta-frames').textContent = project.frames + ' frames';
 document.getElementById('footer-frames').textContent = project.frames + ' frames · ' + project.sub;
 
-// ── Subfolder tabs & grid ─────────────────────────────────────────────────────
-let activeSubIdx = 0;
-
-function currentImages() {
-  if (project.subfolders) return project.subfolders[activeSubIdx].images;
-  return project.images;
-}
+// ── Flatten all images (merge subfolders if any) ─────────────────────────────
+const allImages = project.subfolders
+  ? project.subfolders.flatMap(sf => sf.images)
+  : project.images;
 
 function buildGrid() {
   const grid = document.getElementById('project-grid');
-  const imgs  = currentImages();
   grid.innerHTML = '';
-  imgs.forEach((src, i) => {
+  allImages.forEach((src, i) => {
     const item = document.createElement('div');
     item.className = 'project-grid__item';
     item.innerHTML = '<img src="' + src + '" alt="' + project.title + ' ' + (i+1) + '" loading="' + (i < 6 ? 'eager' : 'lazy') + '">' +
                      '<span class="project-grid__num">' + String(i+1).padStart(2,'0') + '</span>';
     item.addEventListener('click', () => openLightbox(i));
     grid.appendChild(item);
-  });
-}
-
-if (project.subfolders) {
-  const tabsEl = document.getElementById('project-tabs');
-  tabsEl.classList.add('has-tabs');
-  project.subfolders.forEach((sf, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'project-tab' + (i === 0 ? ' is-active' : '');
-    btn.textContent = sf.title;
-    btn.addEventListener('click', () => {
-      tabsEl.querySelectorAll('.project-tab').forEach(b => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      activeSubIdx = i;
-      buildGrid();
-    });
-    tabsEl.appendChild(btn);
   });
 }
 
@@ -471,9 +425,8 @@ const lbCtr    = document.getElementById('lb-counter');
 
 function openLightbox(i) {
   lbIdx = i;
-  const imgs = currentImages();
-  lbImg.src = imgs[i];
-  lbCtr.textContent = (i+1) + ' / ' + imgs.length;
+  lbImg.src = allImages[i];
+  lbCtr.textContent = (i+1) + ' / ' + allImages.length;
   lightbox.classList.add('is-open');
   document.body.style.overflow = 'hidden';
 }
@@ -482,10 +435,9 @@ function closeLightbox() {
   document.body.style.overflow = '';
 }
 function lbNav(dir) {
-  const imgs = currentImages();
-  lbIdx = (lbIdx + dir + imgs.length) % imgs.length;
-  lbImg.src = imgs[lbIdx];
-  lbCtr.textContent = (lbIdx+1) + ' / ' + imgs.length;
+  lbIdx = (lbIdx + dir + allImages.length) % allImages.length;
+  lbImg.src = allImages[lbIdx];
+  lbCtr.textContent = (lbIdx+1) + ' / ' + allImages.length;
 }
 
 document.getElementById('lb-close').addEventListener('click', closeLightbox);
