@@ -64,7 +64,7 @@
       font-size:12px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(244,241,234,.38);
+      color: rgba(244,241,234,.70);
     }
 
     .contact-left__main {
@@ -80,7 +80,7 @@
       font-size:12px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(244,241,234,.38);
+      color: rgba(244,241,234,.75);
       margin-bottom: 16px;
     }
 
@@ -100,7 +100,7 @@
       font-weight: 300;
       font-size:clamp(24px, 1.8vw, 32px);
       line-height: 1.5;
-      color: rgba(244,241,234,.55);
+      color: rgba(244,241,234,.82);
       max-width: 360px;
     }
 
@@ -113,7 +113,7 @@
       font-size:12px;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: rgba(244,241,234,.38);
+      color: rgba(244,241,234,.72);
     }
     .contact-left__availability .dot-green {
       width: 6px; height: 6px;
@@ -130,7 +130,7 @@
       font-family: var(--mono);
       font-size:12px;
       letter-spacing: 0.12em;
-      color: rgba(244,241,234,.38);
+      color: rgba(244,241,234,.65);
     }
 
     /* Right — contact details */
@@ -242,7 +242,7 @@
       font-size:11px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgba(244,241,234,.38);
+      color: rgba(244,241,234,.75);
     }
     .enquiry-form__input {
       font-family: var(--serif);
@@ -281,7 +281,7 @@
       font-size:11px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(244,241,234,.38);
+      color: rgba(244,241,234,.68);
       line-height: 1.7;
     }
     .enquiry-form__submit {
@@ -443,6 +443,156 @@
 
   </main>
 
+  <style>
+    /* OVERLAY */
+    #po {
+      position: fixed; inset: 0; z-index: 9000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 44px;
+      background: rgba(6,6,10,.94);
+      opacity: 0; pointer-events: none;
+      transition: opacity .5s ease;
+    }
+    #po.on { opacity: 1; pointer-events: auto; }
+
+    /* STAGE */
+    .po-stage {
+      position: relative;
+      width: 360px; height: 260px;
+    }
+
+    /* ENVELOPE — starts hidden, JS adds .show / .exit */
+    #po-env {
+      position: absolute; left: 50%; top: 45%;
+      opacity: 0;
+      transform: translate(-50%,-50%) scale(0.4) translateY(50px);
+      transition: opacity .5s ease, transform .6s cubic-bezier(.34,1.56,.64,1);
+    }
+    #po-env.show {
+      opacity: 1;
+      transform: translate(-50%,-50%) scale(1) translateY(0);
+    }
+    #po-env.exit {
+      opacity: 0;
+      transform: translate(-50%,-50%) scale(0.5) translate(190px,-140px) rotate(12deg);
+      transition: opacity .65s ease, transform .75s cubic-bezier(.4,0,1,1);
+    }
+
+    /* ENVELOPE FLAP — JS adds .shut */
+    #po-flap {
+      transform-origin: 50% 0%;
+      transform-box: fill-box;
+      transform: rotateX(0deg);
+      transition: transform .55s cubic-bezier(.4,0,.2,1);
+    }
+    #po-flap.shut { transform: rotateX(175deg); }
+
+    /* BIRD — starts offscreen-left, JS adds .show / .exit */
+    #po-bird {
+      position: absolute; left: 50%; top: 45%;
+      opacity: 0;
+      transform: translate(-50%,-50%) translateX(-340px) translateY(80px);
+      transition: opacity .5s ease, transform .85s cubic-bezier(.25,.46,.45,.94);
+    }
+    #po-bird.show {
+      opacity: 1;
+      transform: translate(-50%,-50%) translateX(0) translateY(0);
+    }
+    #po-bird.exit {
+      opacity: 0;
+      transform: translate(-50%,-50%) translateX(370px) translateY(-195px);
+      transition: opacity .6s ease .1s, transform .85s cubic-bezier(.55,0,1,.45);
+    }
+
+    /* WING FLAP — CSS keyframe, only runs while .flapping class is on the bird */
+    @keyframes wu { 0%{transform:rotate(0)} 100%{transform:rotate(-32deg)} }
+    @keyframes wd { 0%{transform:rotate(0)} 100%{transform:rotate(28deg)}  }
+    #po-bird.flapping .po-wu {
+      transform-origin: 15% 80%; transform-box: fill-box;
+      animation: wu .32s ease-in-out infinite alternate;
+    }
+    #po-bird.flapping .po-wd {
+      transform-origin: 15% 20%; transform-box: fill-box;
+      animation: wd .32s ease-in-out infinite alternate;
+    }
+
+    /* TEXT */
+    #po-txt {
+      font-family: 'Cormorant SC','Cormorant Garamond',serif;
+      font-size: 15px; letter-spacing: .32em; font-weight: 300;
+      color: rgba(244,241,234,.88); text-transform: uppercase;
+      text-align: center;
+      opacity: 0; transform: translateY(14px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    #po-txt.show { opacity: 1; transform: translateY(0); }
+    #po-txt::after {
+      content:''; display:block;
+      width:28px; height:1px;
+      background:rgba(200,169,110,.4);
+      margin:10px auto 0;
+    }
+  </style>
+
+  <div id="po" aria-label="Message sent">
+    <div class="po-stage">
+
+      <!-- ENVELOPE -->
+      <div id="po-env">
+        <svg width="118" height="88" viewBox="0 0 118 88" fill="none">
+          <ellipse cx="59" cy="86" rx="46" ry="4" fill="rgba(0,0,0,.28)"/>
+          <rect x="1" y="1" width="116" height="82" rx="6"
+                fill="#f0ebe0" stroke="rgba(185,148,72,.38)" stroke-width="1.5"/>
+          <path d="M1 83 L44 46 M117 83 L74 46"
+                stroke="rgba(165,130,58,.28)" stroke-width="1.2" stroke-linecap="round"/>
+          <path id="po-flap" d="M1 3 L59 52 L117 3Z"
+                fill="#e6dfd2" stroke="rgba(185,148,72,.42)" stroke-width="1.5"
+                stroke-linejoin="round"/>
+          <circle cx="59" cy="58" r="13" fill="#c8a050"
+                  stroke="rgba(155,105,35,.4)" stroke-width="1.5"/>
+          <text x="59" y="63" text-anchor="middle"
+                font-family="'Cormorant Garamond',Georgia,serif"
+                font-style="italic" font-size="14" fill="rgba(8,8,8,.72)">V</text>
+        </svg>
+      </div>
+
+      <!-- PIGEON -->
+      <div id="po-bird">
+        <svg width="138" height="115" viewBox="0 0 138 115" fill="none">
+          <path d="M20 52 Q4 62 2 52 Q8 38 20 48Z" fill="#bab2aa"/>
+          <ellipse cx="52" cy="52" rx="30" ry="17" fill="#d6cec6"/>
+          <ellipse cx="72" cy="45" rx="15" ry="13" fill="#d2cac2"/>
+          <ellipse cx="74" cy="43" rx="10" ry="7" fill="rgba(100,145,165,.2)"/>
+          <circle cx="88" cy="32" r="14" fill="#cac2ba"/>
+          <path d="M101 29.5 L114 32 L101 34Z" fill="#d09838"/>
+          <path d="M101 31.5 L108 32" stroke="rgba(0,0,0,.18)"
+                stroke-width=".9" stroke-linecap="round"/>
+          <circle cx="92" cy="29" r="3.2" fill="#100c0c"/>
+          <circle cx="93" cy="28" r="1"   fill="rgba(255,255,255,.85)"/>
+          <circle cx="92" cy="29" r="4.4" fill="none"
+                  stroke="rgba(195,155,72,.48)" stroke-width=".9"/>
+          <path class="po-wu"
+                d="M38 44 Q50 22 76 30 Q60 40 38 44Z" fill="#b4aca4"/>
+          <path class="po-wd"
+                d="M38 52 Q50 70 74 62 Q58 50 38 52Z" fill="#a4a09a" opacity=".85"/>
+          <path d="M54 69 L51 82 M51 82 L44 88 M51 82 L51 90 M51 82 L58 87"
+                stroke="#bca06a" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+          <path d="M63 69 L66 82 M66 82 L59 88 M66 82 L66 90 M66 82 L73 87"
+                stroke="#bca06a" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+          <line x1="59" y1="87" x2="59" y2="98"
+                stroke="rgba(195,158,80,.55)" stroke-width="1.3" stroke-dasharray="3 2"/>
+          <rect x="43" y="97" width="32" height="22" rx="3"
+                fill="#f0ebe0" stroke="rgba(185,148,72,.42)" stroke-width="1.2"/>
+          <path d="M43 97 L59 110 L75 97Z"
+                fill="#e6dfd2" stroke="rgba(185,148,72,.35)" stroke-width="1"/>
+          <circle cx="59" cy="112" r="4" fill="rgba(195,158,72,.65)"/>
+        </svg>
+      </div>
+
+    </div>
+    <p id="po-txt">Message sent.</p>
+  </div>
+
   <script src="assets/js/vrasa.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <script>
@@ -487,22 +637,52 @@
       const data = await res.json();
 
       if (data.success) {
-        // Hide form, show success
-        form.hidden = true;
-        success.hidden = false;
+        // Show pigeon animation overlay
+        const overlay = document.getElementById('po');
+        const env  = document.getElementById('po-env');
+        const bird = document.getElementById('po-bird');
+        const txt  = document.getElementById('po-txt');
+        const flap = document.getElementById('po-flap');
 
-        // Confetti burst
+        overlay.classList.add('on');
+
+        // Sequence: envelope appears → flap closes → bird flies in with letter → text fades in → both exit
+        setTimeout(() => env.classList.add('show'), 300);
+        setTimeout(() => flap.classList.add('shut'), 1050);
+        setTimeout(() => { bird.classList.add('show'); bird.classList.add('flapping'); }, 1500);
+        setTimeout(() => txt.classList.add('show'), 2300);
+
+        // Confetti burst timed with bird arrival
         const colors = ['#c8a96e', '#2c2c2c', '#f5f0e8', '#8b7355', '#d4af6e'];
-        confetti({ particleCount: 80, spread: 70, origin: { y: 0.55 }, colors, scalar: 1.1 });
-        setTimeout(() =>
-          confetti({ particleCount: 50, spread: 110, origin: { y: 0.45 }, colors, scalar: 0.9 })
-        , 280);
-        setTimeout(() =>
-          confetti({ particleCount: 40, angle: 60, spread: 55, origin: { x: 0, y: 0.6 }, colors })
-        , 500);
-        setTimeout(() =>
-          confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 1, y: 0.6 }, colors })
-        , 500);
+        setTimeout(() => {
+          confetti({ particleCount: 80, spread: 70, origin: { y: 0.55 }, colors, scalar: 1.1 });
+          setTimeout(() =>
+            confetti({ particleCount: 50, spread: 110, origin: { y: 0.45 }, colors, scalar: 0.9 })
+          , 280);
+          setTimeout(() =>
+            confetti({ particleCount: 40, angle: 60, spread: 55, origin: { x: 0, y: 0.6 }, colors })
+          , 500);
+          setTimeout(() =>
+            confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 1, y: 0.6 }, colors })
+          , 500);
+        }, 1600);
+
+        // Bird and envelope exit
+        setTimeout(() => { bird.classList.add('exit'); env.classList.add('exit'); }, 2900);
+
+        // Fade out overlay, then show success state
+        setTimeout(() => {
+          overlay.style.opacity = '0';
+          setTimeout(() => {
+            overlay.classList.remove('on');
+            overlay.style.opacity = '';
+            // Reset all classes for next potential use
+            env.className  = '';  bird.className = '';
+            txt.className  = '';  flap.className = '';
+            form.hidden = true;
+            success.hidden = false;
+          }, 550);
+        }, 4200);
       } else {
         btn.textContent = 'Send Enquiry →';
         btn.disabled = false;
